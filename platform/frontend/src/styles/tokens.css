@@ -1,0 +1,56 @@
+/* ============================================================================
+   Obsidias shared design tokens
+   ============================================================================
+   Single source of truth for color, radius, and type family, extracted from
+   the landing page redesign. Landing.css and globals.css both import this
+   file and reference these variables instead of redefining their own
+   palette. If a value needs to change, it changes here once.
+
+   Do not add component-specific values here (card padding, button height,
+   etc). Those stay local to whichever stylesheet owns that component. This
+   file is strictly the palette, the radius scale, and the type family.
+   ============================================================================ */
+
+:root {
+  /* ── Ink scale (text) ─────────────────────────────────────────────────── */
+  --ink:        #0D0D0D;
+  --ink2:       #3A3A3A;
+  --ink3:       #7A7A7A;
+  --ink4:       #B0ADA8;
+
+  /* ── Surfaces ──────────────────────────────────────────────────────────── */
+  --bg:         #F9F8F6;
+  --card:       #FFFFFF;
+  --card2:      #F4F2EE;
+  --rule:       #E5E3DC;
+
+  /* ── Accent (used sparingly, on purpose) ──────────────────────────────── */
+  --purple:      #5B4FF5;
+  --purple-lt:   #EEEDFB;
+  --purple-dim:  rgba(91, 79, 245, 0.55);
+
+  /* ── Status ────────────────────────────────────────────────────────────── */
+  --green:      #0D9B6E;
+  --green-lt:   #E4F7F1;
+  --red:        #D0453A;
+  --red-lt:     #FBEAE8;
+  --amber:      #92400E;
+  --amber-lt:   #FFF7E6;
+
+  /* ── Dark surfaces (used for high-contrast bands and the demo UI) ────── */
+  --dark:       #0D0D0F;
+  --dark2:      #17171A;
+  --dark-rule:  #29292D;
+
+  /* ── Radius scale ──────────────────────────────────────────────────────── */
+  --radius-sm:  7px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  16px;
+
+  /* ── Type ──────────────────────────────────────────────────────────────── */
+  /* var(--font-inter) is set by next/font in layout.tsx; the literal 'Inter'
+     name and system fallbacks only matter before that font has loaded. */
+  --font:       var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:  var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+}

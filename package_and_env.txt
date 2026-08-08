@@ -1,0 +1,59 @@
+// ============================================================
+// package.json
+// ============================================================
+{
+  "name": "realestate-ai-workflow",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-powered real estate lead generation and property matching workflow",
+  "main": "node_06_orchestrator.js",
+  "scripts": {
+    "start": "node node_06_orchestrator.js",
+    "dev": "node --watch node_06_orchestrator.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "googleapis": "^144.0.0",
+    "xlsx": "^0.18.5"
+  }
+}
+
+// ============================================================
+// .env.example  —  copy to .env and fill in your values
+// ============================================================
+
+# ── Gemini (Google AI) ──────────────────────────────────────
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# ── Supabase ─────────────────────────────────────────────────
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your_supabase_service_role_key
+
+# ── App ──────────────────────────────────────────────────────
+# The public URL where your Antigravity app is deployed
+APP_BASE_URL=https://your-app.antigravity.dev
+
+# ── WhatsApp (Meta Cloud API) ────────────────────────────────
+WHATSAPP_ACCESS_TOKEN=your_whatsapp_permanent_access_token
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
+AGENT_WHATSAPP_NUMBER=966501234567   # agent's number, no + prefix
+
+# ── Telegram (optional — set channel to "telegram" to use) ───
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+AGENT_TELEGRAM_CHAT_ID=your_agent_chat_id
+
+# ── Gmail API ────────────────────────────────────────────────
+GMAIL_CLIENT_ID=your_gmail_oauth_client_id
+GMAIL_CLIENT_SECRET=your_gmail_oauth_client_secret
+GMAIL_REFRESH_TOKEN=your_gmail_refresh_token
+
+# ── Agent / Agency Info ──────────────────────────────────────
+AGENT_NAME=Mohammed Al-Rashid
+AGENCY_NAME=Al-Rashid Real Estate
+AGENT_PHONE=+966501234567
+AGENT_EMAIL=agent@agency.com
+
+# ── Approval Channel ─────────────────────────────────────────
+# "whatsapp" or "telegram"
+APPROVAL_CHANNEL=whatsapp

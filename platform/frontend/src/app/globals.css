@@ -1,0 +1,149 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* ── Tokens ───────────────────────────────────────── */
+/* Color palette, radius scale, and type family come from the shared token
+   file (src/styles/tokens.css) so the dashboard matches the landing page
+   exactly rather than approximating it. This block only maps those shared
+   tokens onto the additional names the dashboard components already use
+   (--surface, --yellow, --sidebar-w, the Conversations aliases, etc). */
+:root {
+  --surface:     var(--card);
+  --yellow:      #C77A1F;
+  --sidebar-w:   240px;
+
+  /* Conversations Design Tokens */
+  --surface-1:     var(--surface);
+  --surface-2:     var(--bg);
+  --border:        var(--rule);
+  --fill-accent:   var(--purple);
+  --on-accent:     #FFFFFF;
+  --bg-accent:     var(--purple-lt);
+  --text-accent:   var(--purple);
+  --text-primary:  var(--ink);
+  --text-secondary: var(--ink2);
+  --text-muted:    var(--ink3);
+  --bg-pro:        var(--purple-lt);
+  --text-pro:      var(--purple);
+  --bg-warning:    rgba(146, 64, 14, 0.1);
+  --text-warning:  var(--amber);
+  --bg-success:    var(--green-lt);
+  --text-success:  var(--green);
+  --radius:        var(--radius-lg);
+}
+
+/* ── Reset & Base ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { height: 100%; scroll-behavior: smooth; }
+
+body {
+  height: 100%;
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font);
+}
+
+/* ── Typography helpers ───────────────────────────── */
+/* One typeface, restrained weight range, matching the landing page instead
+   of pairing a heavy display face (Syne) against a separate body face. */
+.font-sans    { font-family: var(--font); }
+.font-heading { font-family: var(--font); letter-spacing: -0.02em; }
+.font-mono    { font-family: var(--font-mono); }
+
+/* ── Card ─────────────────────────────────────────── */
+/* Flat surface with a hairline border, same language as the landing page's
+   .l-ch-card / .l-plan, instead of a heavy drop shadow. */
+.saas-card {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  box-shadow: none;
+  border: 0.5px solid var(--rule);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.saas-card:hover {
+  border-color: var(--ink3);
+  transform: translateY(-1px);
+}
+
+/* ── Buttons ──────────────────────────────────────── */
+/* Matches .btn-dark on the landing page: solid ink fill, no glow shadow. */
+.premium-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: none;
+  white-space: nowrap;
+}
+.premium-button:hover {
+  background: var(--ink2);
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--ink);
+  border: 0.5px solid var(--rule);
+  border-radius: var(--radius-md);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ghost-button:hover {
+  border-color: var(--ink3);
+  background: var(--card2);
+}
+
+/* ── Input ────────────────────────────────────────── */
+.input-field {
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 0.5px solid var(--rule);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--purple-lt);
+}
+.input-field::placeholder { color: var(--ink3); }
+
+/* ── Focus ring ───────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 6px;
+}

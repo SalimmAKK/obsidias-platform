@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate AI Workflow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #09090b 0%, #17171e 100%);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --accent-glow: rgba(147, 112, 219, 0.4);
+      --primary: #a78bfa;
+      --primary-hover: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background decorative blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      opacity: 0.6;
+    }
+    .blob-1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(139, 92, 246, 0.3);
+      top: -100px;
+      left: -100px;
+    }
+    .blob-2 {
+      width: 300px;
+      height: 300px;
+      background: rgba(14, 165, 233, 0.2);
+      bottom: -50px;
+      right: -50px;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    header {
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #f8fafc, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    header p {
+      color: var(--text-muted);
+      font-weight: 300;
+      font-size: 1.1rem;
+    }
+
+    /* Glassmorphic Container */
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 2.5rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 30px 60px -15px var(--accent-glow);
+    }
+
+    /* Drag and Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--glass-border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .drop-zone.dragover {
+      border-color: var(--primary);
+      background: rgba(139, 92, 246, 0.1);
+      transform: scale(1.02);
+    }
+
+    .drop-zone-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+      transition: transform 0.3s ease;
+    }
+
+    .drop-zone.dragover .drop-zone-icon {
+      transform: translateY(-10px);
+      opacity: 1;
+    }
+
+    .drop-zone-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-zone-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* Loading State */
+    .loader-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 2rem 0;
+    }
+
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--glass-border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .loader-text {
+      font-size: 1.1rem;
+      font-weight: 500;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Results Screen */
+    .results {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .results h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-reset {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: var(--primary);
+      color: white;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-reset:hover {
+      background: var(--primary-hover);
+    }
+    .btn-reset:active {
+      transform: scale(0.98);
+    }
+
+    .error-msg {
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      display: none;
+      font-size: 0.95rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <main>
+    <header>
+      <h1>AI Lead Orchestrator</h1>
+      <p>Drop a sheet to automate property matching & outreach.</p>
+    </header>
+
+    <div class="card">
+      
+      <!-- Upload View -->
+      <div id="uploadView">
+        <div class="drop-zone" id="dropZone">
+          <div class="drop-zone-icon">📥</div>
+          <div class="drop-zone-title">Click or drag a file to this area</div>
+          <div class="drop-zone-desc">Supports .xlsx, .csv, and Google Sheets exports</div>
+          <input type="file" id="fileInput" class="file-input" accept=".xlsx, .xls, .csv">
+        </div>
+        <div id="errorMsg" class="error-msg"></div>
+      </div>
+
+      <!-- Loading View -->
+      <div id="loadingView" class="loader-container">
+        <div class="loader"></div>
+        <div class="loader-text">Processing leads via AI pipeline...</div>
+      </div>
+
+      <!-- Results View -->
+      <div id="resultsView" class="results">
+        <h2>🎉 Pipeline Complete</h2>
+        <div class="results-grid">
+          <div class="stat-box">
+            <div class="stat-number" id="statTotal">0</div>
+            <div class="stat-label">Total Leads</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="statPending" style="color: var(--primary)">0</div>
+            <div class="stat-label">Sent for Approval</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="statNoMatch" style="color: var(--text-muted)">0</div>
+            <div class="stat-label">No Matches</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="statErrors" style="color: var(--error)">0</div>
+            <div class="stat-label">Errors</div>
+          </div>
+        </div>
+        <button class="btn-reset" onclick="resetUI()">Upload Another Sheet</button>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadView = document.getElementById('uploadView');
+    const loadingView = document.getElementById('loadingView');
+    const resultsView = document.getElementById('resultsView');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Make backend URL dynamic (supports being hosted on GH pages while API is on Cloud Run)
+    // For local dev it hits itself or localhost:8080 if cross-origin.
+    // If the frontend is hosted on the same domain as the backend, it uses relative path.
+    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? 'http://localhost:8080/api/upload' 
+      : '/api/upload';
+
+    // UI State Management
+    function showLoading() {
+      uploadView.style.display = 'none';
+      resultsView.style.display = 'none';
+      loadingView.style.display = 'flex';
+      errorMsg.style.display = 'none';
+    }
+
+    function showResults(data) {
+      loadingView.style.display = 'none';
+      resultsView.style.display = 'block';
+      
+      document.getElementById('statTotal').innerText = data.total || 0;
+      document.getElementById('statPending').innerText = data.pending_approval || 0;
+      document.getElementById('statNoMatch').innerText = data.no_matches || 0;
+      document.getElementById('statErrors').innerText = data.errors || 0;
+    }
+
+    function showError(msg) {
+      loadingView.style.display = 'none';
+      uploadView.style.display = 'block';
+      errorMsg.innerText = msg;
+      errorMsg.style.display = 'block';
+    }
+
+    function resetUI() {
+      resultsView.style.display = 'none';
+      uploadView.style.display = 'block';
+      fileInput.value = '';
+    }
+
+    // File Handling
+    async function handleFile(file) {
+      if (!file) return;
+      
+      showLoading();
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          showResults(result);
+        } else {
+          showError(result.error || 'Failed to process pipeline.');
+        }
+      } catch (err) {
+        showError('Network error connecting to backend API.');
+        console.error(err);
+      }
+    }
+
+    // Drag and Drop Events
+    dropZone.addEventListener('click', () => fileInput.click());
+    
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+  </script>
+</body>
+</html>

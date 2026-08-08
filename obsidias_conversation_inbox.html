@@ -1,0 +1,308 @@
+
+<h2 class="sr-only">Obsidias conversation inbox — filterable list of active AI and human-handled lead conversations with thread detail panel</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.inbox{display:grid;grid-template-columns:280px 1fr;height:560px;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface-2);font-family:var(--font-sans)}
+
+.left{display:flex;flex-direction:column;border-right:0.5px solid var(--border);background:var(--surface-1)}
+.left-head{padding:14px 14px 10px;border-bottom:0.5px solid var(--border)}
+.left-title{font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:10px}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:11px;padding:3px 9px;border-radius:20px;border:0.5px solid var(--border);background:var(--surface-2);color:var(--text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap}
+.chip.active{background:var(--fill-accent);color:var(--on-accent);border-color:var(--fill-accent)}
+
+.thread-list{flex:1;overflow-y:auto;scrollbar-width:thin}
+.thread{display:flex;gap:10px;padding:10px 12px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background .12s;align-items:flex-start}
+.thread:hover{background:var(--surface-2)}
+.thread.active{background:var(--bg-accent)}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;margin-top:1px}
+.thread-body{flex:1;min-width:0}
+.thread-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;gap:4px}
+.thread-name{font-size:13px;font-weight:500;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thread-time{font-size:11px;color:var(--text-muted);flex-shrink:0}
+.thread-preview{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.thread-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;flex-shrink:0}
+.badge-ai{background:var(--bg-pro);color:var(--text-pro)}
+.badge-human{background:var(--bg-warning);color:var(--text-warning)}
+.badge-hot{background:#2A1030;color:#C77DFF}
+.badge-warm{background:var(--bg-success);color:var(--text-success)}
+.badge-cold{background:var(--bg-accent);color:var(--text-accent)}
+.ch-icon{font-size:12px;color:var(--text-muted)}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--fill-accent);flex-shrink:0;margin-left:auto}
+
+.right{display:flex;flex-direction:column;background:var(--surface-2)}
+.right-head{padding:12px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface-1)}
+.right-head-left{display:flex;align-items:center;gap:10px}
+.right-name{font-size:14px;font-weight:500;color:var(--text-primary)}
+.right-sub{font-size:12px;color:var(--text-secondary)}
+.head-actions{display:flex;gap:6px}
+.icon-btn{width:30px;height:30px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-secondary);font-size:14px;transition:background .12s}
+.icon-btn:hover{background:var(--surface-1)}
+.takeover-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:var(--radius);border:0.5px solid var(--border-accent);background:var(--bg-accent);color:var(--text-accent);cursor:pointer;transition:background .12s;white-space:nowrap}
+.takeover-btn:hover{background:var(--fill-accent);color:var(--on-accent)}
+
+.msg-list{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.msg{display:flex;gap:8px;max-width:85%}
+.msg.out{align-self:flex-end;flex-direction:row-reverse}
+.msg-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:2px}
+.msg-body{}
+.msg-bubble{font-size:13px;line-height:1.55;padding:8px 11px;border-radius:10px;color:var(--text-primary)}
+.msg.in .msg-bubble{background:var(--surface-1);border:0.5px solid var(--border)}
+.msg.out .msg-bubble{background:var(--fill-accent);color:var(--on-accent)}
+.msg-meta{font-size:10px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:4px}
+.msg.out .msg-meta{justify-content:flex-end}
+.ai-tag{font-size:9px;padding:1px 5px;border-radius:3px;background:var(--bg-pro);color:var(--text-pro);font-weight:500}
+
+.status-bar{padding:8px 14px;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border);background:var(--surface-1);display:flex;align-items:center;gap:8px}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.status-dot.ai{background:#8B5CF6}
+.status-dot.human{background:#F59E0B}
+.status-label{font-size:12px;color:var(--text-secondary)}
+
+.compose{padding:10px 14px;display:flex;gap:8px;align-items:flex-end;background:var(--surface-1)}
+.compose textarea{flex:1;resize:none;height:38px;font-size:13px;font-family:var(--font-sans);border-radius:var(--radius);border:0.5px solid var(--border);padding:8px 10px;background:var(--surface-2);color:var(--text-primary);line-height:1.4}
+.compose textarea:focus{outline:none;border-color:var(--border-accent)}
+.send-btn{width:36px;height:36px;border-radius:var(--radius);background:var(--fill-accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-accent);font-size:15px;flex-shrink:0;transition:background .12s}
+.send-btn:hover{background:var(--fill-accent-hover,#1a4fdb)}
+
+.score-pill{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px}
+</style>
+
+<div class="inbox">
+
+  <div class="left">
+    <div class="left-head">
+      <div class="left-title">Conversations</div>
+      <div class="filter-row">
+        <span class="chip active" onclick="filterThreads('all',this)">All</span>
+        <span class="chip" onclick="filterThreads('ai',this)">AI active</span>
+        <span class="chip" onclick="filterThreads('human',this)">Human</span>
+        <span class="chip" onclick="filterThreads('hot',this)">Hot</span>
+      </div>
+    </div>
+    <div class="thread-list" id="threadList"></div>
+  </div>
+
+  <div class="right">
+    <div class="right-head">
+      <div class="right-head-left">
+        <div class="avatar" id="detailAvatar" style="background:var(--bg-pro);color:var(--text-pro)"></div>
+        <div>
+          <div class="right-name" id="detailName"></div>
+          <div class="right-sub" id="detailSub"></div>
+        </div>
+      </div>
+      <div class="head-actions">
+        <div class="icon-btn" title="Lead profile"><i class="ti ti-user" aria-hidden="true"></i></div>
+        <div class="icon-btn" title="View in CRM"><i class="ti ti-external-link" aria-hidden="true"></i></div>
+        <button class="takeover-btn" id="takeoverBtn" onclick="toggleTakeover()">Take over</button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-dot ai" id="statusDot"></div>
+      <span class="status-label" id="statusLabel">AI handling this conversation</span>
+      <span style="margin-left:auto;font-size:11px;color:var(--text-muted)" id="channelLabel"></span>
+    </div>
+
+    <div class="msg-list" id="msgList"></div>
+
+    <div class="compose">
+      <textarea placeholder="Type a message — AI is paused while you type" id="composeInput"></textarea>
+      <button class="send-btn" onclick="sendManual()" aria-label="Send message"><i class="ti ti-send" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
+<script>
+const THREADS = [
+  {
+    id:1, name:'Ahmed Al-Khalidi', initials:'AK', score:84, bucket:'hot',
+    status:'ai', channel:'whatsapp', time:'2m ago', unread:true,
+    preview:'Are both of those units available to view this week?',
+    avatarBg:'#2A1030', avatarColor:'#C77DFF',
+    messages:[
+      {dir:'out',text:'Hi Ahmed, I\'m Alex from Obsidias Properties. I saw you\'re interested in a 2BR in Dubai Marina around AED 1.8M — that\'s a great area. Are you looking to buy in the next few months?',time:'11:04 AM',ai:true},
+      {dir:'in', text:'Yes exactly, we\'re aiming for Q3 this year. We have a budget up to 2M.',time:'11:09 AM',ai:false},
+      {dir:'out',text:'Perfect timing — Q3 inventory in Marina is moving fast. I have two units that match your brief: a 1,240 sqft corner unit on the 18th floor and a 1,180 sqft with a sea view on the 22nd. Both are priced within your range.',time:'11:11 AM',ai:true},
+      {dir:'in', text:'That sounds interesting. Are both of those units available to view this week?',time:'11:14 AM',ai:false},
+    ]
+  },
+  {
+    id:2, name:'Sara Rashid', initials:'SR', score:62, bucket:'warm',
+    status:'human', channel:'sms', time:'14m ago', unread:true,
+    preview:'I\'d prefer to speak with someone directly actually',
+    avatarBg:'var(--bg-success)', avatarColor:'var(--text-success)',
+    messages:[
+      {dir:'out',text:'Hi Sara, this is Alex from Obsidias Properties. You recently enquired about villas in Riyadh — are you looking to buy or rent?',time:'10:52 AM',ai:true},
+      {dir:'in', text:'Buy. We need at least 4 bedrooms.',time:'10:58 AM',ai:false},
+      {dir:'out',text:'Got it. What\'s your approximate budget range? That will help me pull the right options for you.',time:'11:01 AM',ai:true},
+      {dir:'in', text:'I\'d prefer to speak with someone directly actually.',time:'11:06 AM',ai:false},
+      {dir:'out',text:'Of course — I\'ve flagged this for one of our senior advisors. You\'ll receive a call within the next 30 minutes. Is there a better number to reach you on?',time:'11:06 AM',ai:false,human:true},
+    ]
+  },
+  {
+    id:3, name:'Mohammed Fahad', initials:'MF', score:31, bucket:'cold',
+    status:'ai', channel:'email', time:'1h ago', unread:false,
+    preview:'Thanks for reaching out. I\'ll have a look.',
+    avatarBg:'var(--bg-accent)', avatarColor:'var(--text-accent)',
+    messages:[
+      {dir:'out',text:'Hi Mohammed, I noticed you downloaded our Riyadh market guide last week. Are you currently exploring property options in the area?',time:'09:30 AM',ai:true},
+      {dir:'in', text:'Thanks for reaching out. I\'ll have a look at what you sent.',time:'10:15 AM',ai:false},
+    ]
+  },
+  {
+    id:4, name:'Lina Al-Sayed', initials:'LS', score:77, bucket:'hot',
+    status:'ai', channel:'instagram_dm', time:'32m ago', unread:false,
+    preview:'What\'s the service charge situation on those?',
+    avatarBg:'#1A0830', avatarColor:'#A78BFA',
+    messages:[
+      {dir:'out',text:'Hi Lina! Thanks for reaching out via Instagram. I saw you\'re interested in apartments in Jeddah — any particular area or size you have in mind?',time:'10:28 AM',ai:true},
+      {dir:'in', text:'Looking at Corniche area, 2–3 bedrooms. Investment purposes mainly.',time:'10:35 AM',ai:false},
+      {dir:'out',text:'Smart pick — Corniche has had strong rental yield over the past 18 months. I can share a few units with solid ROI. Budget range?',time:'10:37 AM',ai:true},
+      {dir:'in', text:'Up to 1.5M SAR. What\'s the service charge situation on those?',time:'10:44 AM',ai:false},
+    ]
+  },
+  {
+    id:5, name:'Tariq Mansour', initials:'TM', score:45, bucket:'warm',
+    status:'ai', channel:'sms', time:'2h ago', unread:false,
+    preview:'Let me check with my wife and get back to you',
+    avatarBg:'var(--bg-success)', avatarColor:'var(--text-success)',
+    messages:[
+      {dir:'out',text:'Hi Tariq, following up on your enquiry about townhouses in Al Olaya. Have you had a chance to review the brochure I sent over?',time:'08:45 AM',ai:true},
+      {dir:'in', text:'Yes I had a look. The prices are a bit above what we planned.',time:'09:10 AM',ai:false},
+      {dir:'out',text:'Understood — there are a couple of options slightly below that range that still tick most of your boxes. Would it help if I put together a shortlist?',time:'09:13 AM',ai:true},
+      {dir:'in', text:'Let me check with my wife and get back to you.',time:'09:20 AM',ai:false},
+    ]
+  },
+];
+
+const CHANNEL_ICONS = {whatsapp:'ti-brand-whatsapp',sms:'ti-message',email:'ti-mail',instagram_dm:'ti-brand-instagram'};
+const CHANNEL_LABELS = {whatsapp:'WhatsApp',sms:'SMS',email:'Email',instagram_dm:'Instagram DM'};
+
+let activeId = 1;
+let humanMode = false;
+let currentFilter = 'all';
+
+function bucketBadge(b){ return `<span class="badge badge-${b}">${b.charAt(0).toUpperCase()+b.slice(1)}</span>`; }
+function statusBadge(s){ return s==='ai'?'<span class="badge badge-ai">AI</span>':'<span class="badge badge-human">Human</span>'; }
+
+function renderThreads(filter){
+  const list = document.getElementById('threadList');
+  const filtered = THREADS.filter(t=>{
+    if(filter==='all') return true;
+    if(filter==='ai') return t.status==='ai';
+    if(filter==='human') return t.status==='human';
+    if(filter==='hot') return t.bucket==='hot';
+    return true;
+  });
+  list.innerHTML = filtered.map(t=>`
+    <div class="thread${t.id===activeId?' active':''}" onclick="selectThread(${t.id})">
+      <div class="avatar" style="background:${t.avatarBg};color:${t.avatarColor}">${t.initials}</div>
+      <div class="thread-body">
+        <div class="thread-top">
+          <span class="thread-name">${t.name}</span>
+          <span class="thread-time">${t.time}</span>
+        </div>
+        <div class="thread-preview">${t.preview}</div>
+        <div class="thread-meta">
+          ${statusBadge(t.status)}
+          ${bucketBadge(t.bucket)}
+          <i class="ti ${CHANNEL_ICONS[t.channel]} ch-icon" aria-hidden="true" title="${CHANNEL_LABELS[t.channel]}"></i>
+          ${t.unread?'<span class="unread-dot"></span>':''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderMessages(thread){
+  const list = document.getElementById('msgList');
+  list.innerHTML = thread.messages.map(m=>`
+    <div class="msg ${m.dir==='out'?'out':'in'}">
+      ${m.dir==='in'?`<div class="msg-avatar" style="background:${thread.avatarBg};color:${thread.avatarColor}">${thread.initials}</div>`:''}
+      ${m.dir==='out'?`<div class="msg-avatar" style="background:var(--bg-pro);color:var(--text-pro)">${m.human?'SK':'AI'}</div>`:''}
+      <div class="msg-body">
+        <div class="msg-bubble">${m.text}</div>
+        <div class="msg-meta">
+          ${m.ai?'<span class="ai-tag">AI</span>':''}
+          ${m.human?'<span class="ai-tag" style="background:var(--bg-warning);color:var(--text-warning)">Human</span>':''}
+          <span>${m.time}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  list.scrollTop = list.scrollHeight;
+}
+
+function selectThread(id){
+  activeId = id;
+  const t = THREADS.find(x=>x.id===id);
+  humanMode = t.status==='human';
+  t.unread = false;
+
+  document.getElementById('detailAvatar').textContent = t.initials;
+  document.getElementById('detailAvatar').style.background = t.avatarBg;
+  document.getElementById('detailAvatar').style.color = t.avatarColor;
+  document.getElementById('detailName').textContent = t.name;
+  document.getElementById('detailSub').textContent = `Score ${t.score} · ${CHANNEL_LABELS[t.channel]}`;
+  document.getElementById('channelLabel').innerHTML = `<i class="ti ${CHANNEL_ICONS[t.channel]}" aria-hidden="true"></i> ${CHANNEL_LABELS[t.channel]}`;
+
+  updateStatus(t);
+  renderMessages(t);
+  renderThreads(currentFilter);
+}
+
+function updateStatus(t){
+  const dot = document.getElementById('statusDot');
+  const label = document.getElementById('statusLabel');
+  const btn = document.getElementById('takeoverBtn');
+  if(t.status==='human'){
+    dot.className='status-dot human';
+    label.textContent='Human agent handling this conversation';
+    btn.textContent='Return to AI';
+  } else {
+    dot.className='status-dot ai';
+    label.textContent='AI handling this conversation';
+    btn.textContent='Take over';
+  }
+}
+
+function toggleTakeover(){
+  const t = THREADS.find(x=>x.id===activeId);
+  t.status = t.status==='ai' ? 'human' : 'ai';
+  updateStatus(t);
+  renderThreads(currentFilter);
+}
+
+function sendManual(){
+  const input = document.getElementById('composeInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const t = THREADS.find(x=>x.id===activeId);
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  t.messages.push({dir:'out',text,time:timeStr,ai:false,human:true});
+  t.preview = text;
+  t.time = 'just now';
+  input.value='';
+  renderMessages(t);
+  renderThreads(currentFilter);
+}
+
+function filterThreads(filter, el){
+  currentFilter = filter;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderThreads(filter);
+}
+
+document.getElementById('composeInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendManual(); }
+});
+
+renderThreads('all');
+selectThread(1);
+</script>

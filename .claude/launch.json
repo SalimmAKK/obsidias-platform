@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "obsidias-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "frontend:dev"],
+      "port": 3000
+    }
+  ]
+}
