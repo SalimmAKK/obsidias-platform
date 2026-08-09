@@ -1,0 +1,23 @@
+{
+  "name": "obsidias-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Background queue processor for the Obsidias lead pipeline (enrichment, qualification, conversation, scoring, appointments, CRM sync, reactivation). Deployed separately from platform/frontend — this is a long-running process, not a serverless function, so it does not run on Vercel.",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
+    "bullmq": "^5.34.4",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}
