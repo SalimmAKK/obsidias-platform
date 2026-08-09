@@ -49,6 +49,33 @@ body {
   }
 }
 
+/* ── ABOVE-THE-FOLD ENTRANCE ─────────────────────────────────────────────── */
+/* .reveal depends on JavaScript loading, executing, and an IntersectionObserver
+   firing before content becomes visible — fine for sections the visitor
+   scrolls to, but wrong for the hero: on a slow or cold first load there's a
+   real gap where it just sits blank. This is a plain CSS @keyframes
+   animation instead, which the browser runs on paint regardless of when (or
+   whether) JS has finished hydrating, so the hero is never gated on script
+   execution. */
+@keyframes lEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.l-enter {
+  animation: lEnter 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+.l-e1 { animation-delay: 0.08s; }
+.l-e2 { animation-delay: 0.16s; }
+.l-e3 { animation-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .l-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ── NAV ──────────────────────────────────────────────────────────────────── */
 .l-nav {
   position: fixed;

@@ -41,25 +41,25 @@ function Hero() {
     <section className="l-hero">
       <div className="l-wide l-hero-grid">
         <div className="l-hero-left">
-          <p className="l-hero-eyebrow reveal">For agencies in Saudi Arabia and the Gulf</p>
-          <h1 className="l-hero-hook reveal d1">
+          <p className="l-hero-eyebrow l-enter">For agencies in Saudi Arabia and the Gulf</p>
+          <h1 className="l-hero-hook l-enter l-e1">
             A lead messages your agency at 11:40pm.<br />
             Someone replies to them by midnight.<br />
             <span className="dim">It usually isn&rsquo;t you.</span>
           </h1>
-          <p className="l-hero-sub reveal d2">
+          <p className="l-hero-sub l-enter l-e2">
             Obsidias answers on WhatsApp, Instagram, or wherever the lead reached out,
             in under 90 seconds, day or night. It checks their budget, authority, need
             and timeline before your agent ever opens the thread, and books the viewing
             if they&rsquo;re ready.
           </p>
-          <div className="l-hero-cta reveal d3">
+          <div className="l-hero-cta l-enter l-e3">
             <a href="#demo" className="btn-dark">Watch it respond</a>
             <Link href="/login" className="btn-outline">Request access</Link>
           </div>
         </div>
 
-        <div className="l-hero-right reveal d2">
+        <div className="l-hero-right l-enter l-e2">
           <p className="l-clock-eyebrow">Response window</p>
           <div className="l-clock-row">
             <span className="l-clock-dot" />
