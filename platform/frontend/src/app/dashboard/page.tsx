@@ -74,10 +74,11 @@ function MetricCard({ title, value, icon: Icon, tone = "default", delay = 0 }: C
 function AddLeadModal({ isOpen, onClose, onCreated }: { isOpen: boolean; onClose: () => void; onCreated: () => void }) {
   const { addToast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const emptyForm = {
     firstName: "", lastName: "", email: "", phone: "",
-    source: "Landing Page", channel: "whatsapp", campaign: "",
-  });
+    source: "Landing Page", channel: "whatsapp", campaign: "", inquiryText: "",
+  };
+  const [form, setForm] = useState(emptyForm);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,8 +93,11 @@ function AddLeadModal({ isOpen, onClose, onCreated }: { isOpen: boolean; onClose
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to add lead");
       }
-      addToast(`${form.firstName} added.`, "success");
-      setForm({ firstName: "", lastName: "", email: "", phone: "", source: "Landing Page", channel: "whatsapp", campaign: "" });
+      addToast(
+        form.inquiryText.trim() ? `${form.firstName} added and sent for AI qualification.` : `${form.firstName} added.`,
+        "success"
+      );
+      setForm(emptyForm);
       onCreated();
       onClose();
     } catch (err: any) {
@@ -146,6 +150,18 @@ function AddLeadModal({ isOpen, onClose, onCreated }: { isOpen: boolean; onClose
           <label className="text-[11px] text-[var(--ink3)] font-semibold uppercase tracking-wider">Campaign <span className="normal-case font-normal text-[var(--ink3)]">(optional)</span></label>
           <input className="input-field" placeholder="e.g. Q1 Riyadh Villas" value={form.campaign}
             onChange={e => setForm(f => ({ ...f, campaign: e.target.value }))} />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[11px] text-[var(--ink3)] font-semibold uppercase tracking-wider">
+            What did they say? <span className="normal-case font-normal text-[var(--ink3)]">(optional — logged as their first message, and sent for AI qualification)</span>
+          </label>
+          <textarea
+            className="input-field !h-auto py-2.5"
+            rows={3}
+            placeholder="e.g. Looking for a 3 bedroom villa in Riyadh, budget around 1.5M SAR, want to move within 2 months"
+            value={form.inquiryText}
+            onChange={e => setForm(f => ({ ...f, inquiryText: e.target.value }))}
+          />
         </div>
         <div className="flex justify-end gap-3 pt-2">
           <button type="button" className="ghost-button" onClick={onClose}>Cancel</button>

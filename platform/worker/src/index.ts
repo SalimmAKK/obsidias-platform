@@ -3,15 +3,15 @@ import { Worker } from "bullmq";
 import { connection } from "./lib/redis.js";
 import { supabaseAdmin } from "./lib/supabase.js";
 import { QueueName, healthcheckQueue } from "./queues/definitions.js";
+import { processQualificationJob } from "./queues/processors/qualification.js";
 
-// ── Phase 1 scaffold ─────────────────────────────────────────────────────
-// This entrypoint does not process real leads yet. Its only job is to prove
-// the three things every later phase depends on actually work in this
-// deployment: this process can stay alive continuously, it can reach the
-// Upstash Redis instance, and it can reach Supabase with the service-role
-// key. Once that's confirmed (see the log output after deploying), the real
-// queue processors (enrichment, qualification, conversation, ...) get
-// added as sibling files under src/queues/processors/ and registered here.
+// Phase 1 proved the plumbing (Redis, Supabase, a process that stays
+// alive). Phase 2 starts here: the qualification queue is now a real
+// processor, calling OpenAI to run BANT assessment against leads created
+// via the dashboard (or, once WhatsApp is wired up, real inbound
+// messages). Enrichment, conversation, scoring, appointments, crm-sync,
+// and reactivation still have no processors — same pattern, added one at
+// a time under src/queues/processors/ and registered below.
 
 async function verifyConnections() {
   console.log("[startup] Verifying Redis connection...");
@@ -38,6 +38,18 @@ async function main() {
 
   worker.on("failed", (job, err) => {
     console.error(`[healthcheck] job ${job?.id} failed:`, err.message);
+  });
+
+  const qualificationWorker = new Worker(QueueName.QUALIFICATION, processQualificationJob, {
+    connection,
+    concurrency: 3,
+  });
+
+  qualificationWorker.on("completed", (job) => {
+    console.log(`[qualification] job ${job.id} completed.`);
+  });
+  qualificationWorker.on("failed", (job, err) => {
+    console.error(`[qualification] job ${job?.id} failed:`, err.message);
   });
 
   // Proves the queue round-trip end to end: this process enqueues a job,

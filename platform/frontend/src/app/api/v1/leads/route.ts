@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient, getAuthedAgencyContext } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { mockLeadsDb } from "@/lib/mockLeadsDb";
+import { enqueueQualification } from "@/lib/queue";
 
 function mapLead(l: any) {
   return {
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { firstName, lastName, email, phone, source, channel, campaign } = body;
+  const { firstName, lastName, email, phone, source, channel, campaign, inquiryText } = body;
 
   if (!firstName) {
     return NextResponse.json({ error: "firstName is required" }, { status: 400 });
@@ -88,6 +89,7 @@ export async function POST(request: NextRequest) {
       const ctx = await getAuthedAgencyContext();
       if (!ctx) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
       const { supabase, agencyId } = ctx;
+      const resolvedChannel = channel || "whatsapp";
 
       const { data, error } = await supabase
         .from("leads")
@@ -98,17 +100,58 @@ export async function POST(request: NextRequest) {
           email: email || null,
           phone: phone || null,
           source: source || "Landing Page",
-          channel: channel || "whatsapp",
+          channel: resolvedChannel,
           campaign: campaign?.trim() || null,
           status: "new",
         })
         .select("*")
         .single();
 
-      if (!error && data) {
-        return NextResponse.json({ success: true, lead: mapLead(data) });
-      }
       if (error) throw error;
+      if (!data) throw new Error("Insert returned no row.");
+
+      // If the agent logged what the lead actually said (phone call,
+      // walk-in, etc.), record it as the first message in a real
+      // conversation thread so the qualification job below has something
+      // to assess instead of just a name and phone number.
+      const trimmedInquiry = typeof inquiryText === "string" ? inquiryText.trim() : "";
+      if (trimmedInquiry) {
+        const { data: conversation, error: convError } = await supabase
+          .from("conversations")
+          .insert({
+            agency_id: agencyId,
+            lead_id: data.id,
+            channel: resolvedChannel,
+            status: "ai",
+            unread: false,
+            last_message_at: new Date().toISOString(),
+          })
+          .select("id")
+          .single();
+
+        if (convError) {
+          console.error("Failed to create initial conversation for lead:", convError);
+        } else if (conversation) {
+          const { error: msgError } = await supabase.from("messages").insert({
+            conversation_id: conversation.id,
+            direction: "inbound",
+            content: trimmedInquiry,
+            is_ai: false,
+            is_human: false,
+            channel: resolvedChannel,
+          });
+          if (msgError) console.error("Failed to log initial inquiry message:", msgError);
+        }
+      }
+
+      // Fire-and-forget: a slow/unavailable Redis shouldn't block lead
+      // creation. enqueueQualification already no-ops safely if REDIS_URL
+      // isn't configured.
+      enqueueQualification(data.id).catch((err) => {
+        console.error(`Failed to enqueue qualification job for lead ${data.id}:`, err);
+      });
+
+      return NextResponse.json({ success: true, lead: mapLead(data) });
     }
   } catch (err: any) {
     console.error("Supabase insert failed:", err);
