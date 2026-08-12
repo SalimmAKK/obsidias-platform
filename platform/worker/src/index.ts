@@ -2,8 +2,9 @@ import http from "node:http";
 import { Worker } from "bullmq";
 import { connection } from "./lib/redis.js";
 import { supabaseAdmin } from "./lib/supabase.js";
-import { QueueName, healthcheckQueue } from "./queues/definitions.js";
+import { QueueName, healthcheckQueue, reactivationQueue } from "./queues/definitions.js";
 import { processQualificationJob } from "./queues/processors/qualification.js";
+import { processReactivationSweep } from "./queues/processors/reactivation.js";
 
 // Phase 1 proved the plumbing (Redis, Supabase, a process that stays
 // alive). Phase 2 starts here: the qualification queue is now a real
@@ -52,6 +53,15 @@ async function main() {
     console.error(`[qualification] job ${job?.id} failed:`, err.message);
   });
 
+  const reactivationWorker = new Worker(QueueName.REACTIVATION, processReactivationSweep, { connection });
+
+  reactivationWorker.on("completed", (job) => {
+    console.log(`[reactivation] job ${job.id} completed.`);
+  });
+  reactivationWorker.on("failed", (job, err) => {
+    console.error(`[reactivation] job ${job?.id} failed:`, err.message);
+  });
+
   // Proves the queue round-trip end to end: this process enqueues a job,
   // and the worker above (same process, but in production this would
   // typically be a separate consumer) picks it up and processes it.
@@ -59,6 +69,15 @@ async function main() {
     "healthcheck-heartbeat",
     { every: 5 * 60 * 1000 }, // every 5 minutes
     { name: "heartbeat" }
+  );
+
+  // 6am UTC = 9am Riyadh (Saudi Arabia doesn't observe DST, so this offset
+  // is stable year-round). Sweeps for cold leads once a day rather than
+  // continuously — reactivation is a daily-cadence concern, not real-time.
+  await reactivationQueue.upsertJobScheduler(
+    "reactivation-daily-sweep",
+    { pattern: "0 6 * * *" },
+    { name: "daily-sweep" }
   );
 
   console.log("[startup] Worker service is up. Watching for jobs...");

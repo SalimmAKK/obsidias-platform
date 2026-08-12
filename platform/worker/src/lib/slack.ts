@@ -70,3 +70,35 @@ export async function notifyNeedsReview(input: LeadNotificationInput): Promise<v
 
   await postToSlack(lines.join("\n"));
 }
+
+interface ReactivationLead {
+  id: string;
+  firstName: string;
+  lastName: string;
+  source: string;
+  channel: string;
+  daysCold: number;
+}
+
+/**
+ * One digest per sweep rather than one message per lead — a cron job that
+ * flags a dozen leads shouldn't produce a dozen separate pings.
+ */
+export async function notifyReactivationDigest(leads: ReactivationLead[]): Promise<void> {
+  const MAX_LISTED = 10;
+  const listed = leads.slice(0, MAX_LISTED);
+  const remainder = leads.length - listed.length;
+
+  const lines = [
+    `${leads.length} lead${leads.length === 1 ? "" : "s"} went cold and moved to nurturing — worth a follow-up:`,
+    ...listed.map((lead) => {
+      const name = `${lead.firstName} ${lead.lastName}`.trim() || "Unnamed lead";
+      const url = leadUrl(lead.id);
+      const base = `- ${name} (${lead.source}/${lead.channel}) — ${lead.daysCold} days quiet`;
+      return url ? `${base} — ${url}` : base;
+    }),
+    remainder > 0 ? `...and ${remainder} more.` : null,
+  ].filter(Boolean);
+
+  await postToSlack(lines.join("\n"));
+}
