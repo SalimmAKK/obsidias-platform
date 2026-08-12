@@ -163,7 +163,7 @@ create table if not exists qualifications (
   updated_at           timestamptz not null default now()
 );
 
--- ── Appointments (manually scheduled viewings, until Cal.com is wired up) ─
+-- ── Appointments (viewings; optionally synced to a real Cal.com booking) ──
 create table if not exists appointments (
   id            uuid primary key default gen_random_uuid(),
   agency_id     uuid not null references agencies(id) on delete cascade,
@@ -174,6 +174,11 @@ create table if not exists appointments (
                   check (status in ('scheduled', 'completed', 'cancelled', 'no_show')),
   location      text not null default '',
   notes         text not null default '',
+
+  -- Set only if Cal.com is configured (CALCOM_API_KEY/CALCOM_EVENT_TYPE_ID)
+  -- and the booking synced successfully. Null means the appointment only
+  -- exists locally — still fully functional, just not on a real calendar.
+  calcom_booking_uid  text,
 
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()

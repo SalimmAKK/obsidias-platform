@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, MapPin, Loader2, Plus, Check, X, UserX } from "lucide-react";
+import { Calendar, Clock, MapPin, Loader2, Plus, Check, X, UserX, CalendarCheck2 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { GlassPanel } from "@/components/GlassPanel";
 import { Modal } from "@/components/Modal";
@@ -26,6 +26,7 @@ interface Appointment {
   status: "scheduled" | "completed" | "cancelled" | "no_show";
   location: string;
   notes: string;
+  calcomSynced: boolean;
 }
 
 interface LeadOption {
@@ -81,7 +82,12 @@ function ScheduleModal({ isOpen, onClose, onScheduled }: { isOpen: boolean; onCl
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || "Failed to schedule");
       }
-      addToast("Viewing scheduled.", "success");
+      const result = await res.json().catch(() => ({}));
+      if (result.calcomWarning) {
+        addToast(result.calcomWarning, "warning");
+      } else {
+        addToast("Viewing scheduled.", "success");
+      }
       setLeadId(""); setDate(""); setTime(""); setLocation(""); setNotes("");
       onScheduled();
       onClose();
@@ -221,6 +227,11 @@ export default function AppointmentsPage() {
                         {a.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{a.location}</span>}
                       </div>
                     </div>
+                    {a.calcomSynced && (
+                      <span title="Synced to Cal.com" className="shrink-0 text-[var(--green)]">
+                        <CalendarCheck2 className="w-4 h-4" />
+                      </span>
+                    )}
                     <span className={`px-2.5 py-1 rounded-full font-sans font-semibold text-[11px] shrink-0 ${STATUS_STYLES[a.status]}`}>
                       {a.status.replace("_", " ")}
                     </span>
