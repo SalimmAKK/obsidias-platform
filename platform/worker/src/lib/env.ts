@@ -38,4 +38,9 @@ export const env = {
   CALCOM_API_KEY: process.env.CALCOM_API_KEY,
   GOHIGHLEVEL_API_KEY: process.env.GOHIGHLEVEL_API_KEY,
   SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL,
+
+  // Deployed frontend origin (e.g. https://obsidias.vercel.app), used only
+  // to build a clickable link to the lead in Slack notifications. Purely
+  // cosmetic — notifications still work without it, just without a link.
+  APP_BASE_URL: process.env.APP_BASE_URL,
 };

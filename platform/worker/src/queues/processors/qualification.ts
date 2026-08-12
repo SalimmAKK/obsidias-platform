@@ -2,6 +2,7 @@ import type { Job } from "bullmq";
 import { supabaseAdmin } from "../../lib/supabase.js";
 import { assessLead } from "../../lib/openai.js";
 import { scoreFromConfidence, bucketFromScore } from "../../lib/bant.js";
+import { notifyHotLead, notifyNeedsReview } from "../../lib/slack.js";
 
 export interface QualificationJobData {
   leadId: string;
@@ -104,4 +105,27 @@ export async function processQualificationJob(job: Job<QualificationJobData>) {
   console.log(
     `[qualification] Lead ${leadId} -> status=${status} confidence=${assessment.confidence} score=${score} bucket=${bucket}`
   );
+
+  // Notifications are best-effort — a Slack failure must never fail the
+  // job or roll back the qualification result that already landed above.
+  const notificationInput = {
+    leadId,
+    firstName: lead.first_name,
+    lastName: lead.last_name,
+    source: lead.source,
+    channel: lead.channel,
+    score,
+    confidence: assessment.confidence,
+    qualificationNotes: assessment.qualification_notes,
+  };
+
+  if (status === "qualified" && bucket === "hot") {
+    await notifyHotLead(notificationInput).catch((err) =>
+      console.error(`[qualification] Failed to send hot-lead Slack notification for ${leadId}:`, err)
+    );
+  } else if (status === "needs_review") {
+    await notifyNeedsReview(notificationInput).catch((err) =>
+      console.error(`[qualification] Failed to send needs-review Slack notification for ${leadId}:`, err)
+    );
+  }
 }

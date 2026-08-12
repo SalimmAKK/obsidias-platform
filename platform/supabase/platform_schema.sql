@@ -19,7 +19,13 @@ create extension if not exists "pgcrypto";
 create table if not exists agencies (
   id          uuid primary key default gen_random_uuid(),
   name        text not null,
-  created_at  timestamptz not null default now()
+  created_at  timestamptz not null default now(),
+
+  -- WhatsApp Cloud API's phone_number_id for this agency's business number.
+  -- The inbound webhook (api/v1/webhooks/whatsapp) uses this to route a
+  -- message to the right agency — one Meta app/webhook serves every
+  -- agency's number. Unique because a number belongs to exactly one agency.
+  whatsapp_phone_number_id  text unique
 );
 
 -- ── Profiles (one row per Supabase Auth user, extends auth.users) ──────────
@@ -45,7 +51,7 @@ create table if not exists leads (
   phone                 text,
 
   source                text not null default 'Landing Page'
-                          check (source in ('Meta Ad', 'Landing Page', 'Chat Widget', 'Referral', 'Instagram')),
+                          check (source in ('Meta Ad', 'Landing Page', 'Chat Widget', 'Referral', 'Instagram', 'WhatsApp')),
   channel               text not null default 'whatsapp'
                           check (channel in ('sms', 'whatsapp', 'email', 'instagram_dm')),
   -- Free-text campaign tag (e.g. "Q1 Riyadh Villas"). Nullable — leads
@@ -114,10 +120,17 @@ create table if not exists messages (
   channel          text not null default 'whatsapp'
                      check (channel in ('sms', 'whatsapp', 'email', 'instagram_dm')),
 
+  -- Provider-side message id (e.g. WhatsApp Cloud API's message id). Lets
+  -- inbound webhooks detect and ignore duplicate deliveries — Meta retries
+  -- a webhook call whenever it doesn't get a fast 200, so the same message
+  -- can arrive more than once.
+  external_id      text,
+
   created_at       timestamptz not null default now()
 );
 
 create index if not exists messages_conversation_id_idx on messages(conversation_id, created_at);
+create index if not exists messages_external_id_idx on messages(external_id) where external_id is not null;
 
 -- ── Lead score history (for the lead detail page's score chart) ───────────
 create table if not exists lead_score_history (
