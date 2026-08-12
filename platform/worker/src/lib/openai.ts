@@ -4,7 +4,9 @@ import { BantAssessmentSchema, type BantAssessment } from "./bant.js";
 
 let client: OpenAI | null = null;
 
-function getClient(): OpenAI {
+/** Shared lazy OpenAI client — exported so other processors (e.g. the
+ * conversation engine) don't each re-implement this same guard. */
+export function getOpenAIClient(): OpenAI {
   if (!env.OPENAI_API_KEY) {
     throw new Error(
       "OPENAI_API_KEY is not set. Add it to platform/worker/.env (local) or Railway's Variables tab (deployed)."
@@ -45,7 +47,7 @@ Rules:
 - confidence reflects how much you actually know, not how promising the lead seems. A confirmed decision-maker with a small budget is high confidence; an enthusiastic message with no budget/timeline mentioned is low confidence.`;
 
 export async function assessLead(input: QualifyInput): Promise<BantAssessment> {
-  const openai = getClient();
+  const openai = getOpenAIClient();
 
   const userPrompt = [
     `Lead: ${input.firstName} ${input.lastName}`,

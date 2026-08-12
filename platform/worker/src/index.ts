@@ -5,6 +5,7 @@ import { supabaseAdmin } from "./lib/supabase.js";
 import { QueueName, healthcheckQueue, reactivationQueue } from "./queues/definitions.js";
 import { processQualificationJob } from "./queues/processors/qualification.js";
 import { processReactivationSweep } from "./queues/processors/reactivation.js";
+import { processConversationJob } from "./queues/processors/conversation.js";
 
 // Phase 1 proved the plumbing (Redis, Supabase, a process that stays
 // alive). Phase 2 starts here: the qualification queue is now a real
@@ -60,6 +61,18 @@ async function main() {
   });
   reactivationWorker.on("failed", (job, err) => {
     console.error(`[reactivation] job ${job?.id} failed:`, err.message);
+  });
+
+  const conversationWorker = new Worker(QueueName.CONVERSATION, processConversationJob, {
+    connection,
+    concurrency: 3,
+  });
+
+  conversationWorker.on("completed", (job) => {
+    console.log(`[conversation] job ${job.id} completed.`);
+  });
+  conversationWorker.on("failed", (job, err) => {
+    console.error(`[conversation] job ${job?.id} failed:`, err.message);
   });
 
   // Proves the queue round-trip end to end: this process enqueues a job,

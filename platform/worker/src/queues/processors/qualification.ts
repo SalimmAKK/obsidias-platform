@@ -3,6 +3,7 @@ import { supabaseAdmin } from "../../lib/supabase.js";
 import { assessLead } from "../../lib/openai.js";
 import { scoreFromConfidence, bucketFromScore } from "../../lib/bant.js";
 import { notifyHotLead, notifyNeedsReview } from "../../lib/slack.js";
+import { conversationQueue } from "../definitions.js";
 
 export interface QualificationJobData {
   leadId: string;
@@ -127,5 +128,19 @@ export async function processQualificationJob(job: Job<QualificationJobData>) {
     await notifyNeedsReview(notificationInput).catch((err) =>
       console.error(`[qualification] Failed to send needs-review Slack notification for ${leadId}:`, err)
     );
+  }
+
+  // Hand off to the conversation engine so the AI can actually reply to
+  // whatever the lead just said — but only if there's a real conversation
+  // to reply in, and the lead wasn't just disqualified (nothing to
+  // continue engaging with there).
+  if (conversation && status !== "archived") {
+    await conversationQueue
+      .add(
+        "generate-reply",
+        { leadId, conversationId: conversation.id },
+        { jobId: `conversation-${leadId}-${Date.now()}` }
+      )
+      .catch((err) => console.error(`[qualification] Failed to enqueue conversation job for lead ${leadId}:`, err));
   }
 }
