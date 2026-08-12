@@ -6,6 +6,8 @@ import { QueueName, healthcheckQueue, reactivationQueue } from "./queues/definit
 import { processQualificationJob } from "./queues/processors/qualification.js";
 import { processReactivationSweep } from "./queues/processors/reactivation.js";
 import { processConversationJob } from "./queues/processors/conversation.js";
+import { processEnrichmentJob } from "./queues/processors/enrichment.js";
+import { processCrmSyncJob } from "./queues/processors/crmSync.js";
 
 // Phase 1 proved the plumbing (Redis, Supabase, a process that stays
 // alive). Phase 2 starts here: the qualification queue is now a real
@@ -73,6 +75,24 @@ async function main() {
   });
   conversationWorker.on("failed", (job, err) => {
     console.error(`[conversation] job ${job?.id} failed:`, err.message);
+  });
+
+  const enrichmentWorker = new Worker(QueueName.ENRICHMENT, processEnrichmentJob, { connection });
+
+  enrichmentWorker.on("completed", (job) => {
+    console.log(`[enrichment] job ${job.id} completed.`);
+  });
+  enrichmentWorker.on("failed", (job, err) => {
+    console.error(`[enrichment] job ${job?.id} failed:`, err.message);
+  });
+
+  const crmSyncWorker = new Worker(QueueName.CRM_SYNC, processCrmSyncJob, { connection });
+
+  crmSyncWorker.on("completed", (job) => {
+    console.log(`[crm-sync] job ${job.id} completed.`);
+  });
+  crmSyncWorker.on("failed", (job, err) => {
+    console.error(`[crm-sync] job ${job?.id} failed:`, err.message);
   });
 
   // Proves the queue round-trip end to end: this process enqueues a job,

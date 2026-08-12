@@ -3,7 +3,7 @@ import { supabaseAdmin } from "../../lib/supabase.js";
 import { assessLead } from "../../lib/openai.js";
 import { scoreFromConfidence, bucketFromScore } from "../../lib/bant.js";
 import { notifyHotLead, notifyNeedsReview } from "../../lib/slack.js";
-import { conversationQueue } from "../definitions.js";
+import { conversationQueue, crmSyncQueue } from "../definitions.js";
 
 export interface QualificationJobData {
   leadId: string;
@@ -142,5 +142,14 @@ export async function processQualificationJob(job: Job<QualificationJobData>) {
         { jobId: `conversation-${leadId}-${Date.now()}` }
       )
       .catch((err) => console.error(`[qualification] Failed to enqueue conversation job for lead ${leadId}:`, err));
+  }
+
+  // Push confirmed-qualified leads to the CRM. Not gated on hot/warm
+  // bucket like the Slack notification is — CRM sync is about keeping the
+  // agency's system of record complete, not just flagging urgent ones.
+  if (status === "qualified") {
+    await crmSyncQueue
+      .add("sync-lead", { leadId }, { jobId: `crm-sync-${leadId}-${Date.now()}` })
+      .catch((err) => console.error(`[qualification] Failed to enqueue CRM sync job for lead ${leadId}:`, err));
   }
 }

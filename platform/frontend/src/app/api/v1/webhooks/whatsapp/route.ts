@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { supabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabase/admin";
-import { enqueueQualification } from "@/lib/queue";
+import { enqueueEnrichment, enqueueQualification } from "@/lib/queue";
 
 // This route talks to Meta over plain HTTP, not the browser — it must run
 // in the Node.js runtime (for crypto) rather than the Edge runtime.
@@ -273,7 +273,17 @@ async function processInboundMessage(input: {
     `[whatsapp webhook] Logged inbound message from ${phone} on lead ${leadId}${isNewLead ? " (new lead)" : ""}.`
   );
 
-  enqueueQualification(leadId).catch((err) => {
-    console.error(`[whatsapp webhook] Failed to enqueue qualification job for lead ${leadId}:`, err);
-  });
+  // First message from a brand-new lead goes through enrichment (which
+  // chains into qualification once done); every later message on an
+  // existing lead skips straight to qualification so enrichment doesn't
+  // needlessly re-run on every reply.
+  if (isNewLead) {
+    enqueueEnrichment(leadId).catch((err) => {
+      console.error(`[whatsapp webhook] Failed to enqueue enrichment job for lead ${leadId}:`, err);
+    });
+  } else {
+    enqueueQualification(leadId).catch((err) => {
+      console.error(`[whatsapp webhook] Failed to enqueue qualification job for lead ${leadId}:`, err);
+    });
+  }
 }

@@ -79,6 +79,19 @@ create table if not exists leads (
 
   assigned_agent_id     uuid references profiles(id) on delete set null,
 
+  -- Populated by the enrichment worker (Apollo people-match), before
+  -- qualification runs. Null fields just mean no match was found — not an
+  -- error, enrichment is best-effort and never blocks the pipeline.
+  enrichment_job_title    text,
+  enrichment_company      text,
+  enrichment_linkedin_url text,
+  enriched_at             timestamptz,
+
+  -- Set once this lead has been pushed to the agency's CRM (HubSpot).
+  -- Null means either sync hasn't run yet, isn't configured, or failed —
+  -- the activities log has the actual reason in the latter case.
+  hs_contact_id           text,
+
   captured_at           timestamptz not null default now(),
   created_at            timestamptz not null default now(),
   updated_at            timestamptz not null default now()

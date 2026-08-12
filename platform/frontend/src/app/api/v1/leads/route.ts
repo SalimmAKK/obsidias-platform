@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient, getAuthedAgencyContext } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { mockLeadsDb } from "@/lib/mockLeadsDb";
-import { enqueueQualification } from "@/lib/queue";
+import { enqueueEnrichment } from "@/lib/queue";
 
 function mapLead(l: any) {
   return {
@@ -145,10 +145,12 @@ export async function POST(request: NextRequest) {
       }
 
       // Fire-and-forget: a slow/unavailable Redis shouldn't block lead
-      // creation. enqueueQualification already no-ops safely if REDIS_URL
-      // isn't configured.
-      enqueueQualification(data.id).catch((err) => {
-        console.error(`Failed to enqueue qualification job for lead ${data.id}:`, err);
+      // creation. This is a brand-new lead, so it goes through enrichment
+      // first (which chains into qualification once done) rather than
+      // straight to qualification — enqueueEnrichment already no-ops
+      // safely if REDIS_URL isn't configured.
+      enqueueEnrichment(data.id).catch((err) => {
+        console.error(`Failed to enqueue enrichment job for lead ${data.id}:`, err);
       });
 
       return NextResponse.json({ success: true, lead: mapLead(data) });

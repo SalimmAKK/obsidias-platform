@@ -36,7 +36,7 @@ export const env = {
   APOLLO_API_KEY: process.env.APOLLO_API_KEY,
   CLEARBIT_API_KEY: process.env.CLEARBIT_API_KEY,
   CALCOM_API_KEY: process.env.CALCOM_API_KEY,
-  GOHIGHLEVEL_API_KEY: process.env.GOHIGHLEVEL_API_KEY,
+  HUBSPOT_ACCESS_TOKEN: process.env.HUBSPOT_ACCESS_TOKEN,
   SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL,
 
   // Deployed frontend origin (e.g. https://obsidias.vercel.app), used only
