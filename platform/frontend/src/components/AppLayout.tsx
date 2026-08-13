@@ -48,13 +48,13 @@ export function AppLayout({ children, title, greeting = false }: AppLayoutProps)
   const initials = (name || email || "?").charAt(0).toUpperCase();
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg)]">
+    <div className="flex min-h-screen bg-[var(--canvas)]">
       <Sidebar />
 
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 bg-white border-b border-[var(--rule)] flex items-center justify-between px-8 h-[64px] shrink-0">
-          <h1 className="font-sans font-semibold text-[22px] text-[var(--ink)] tracking-tight">
+        <header className="sticky top-0 z-30 bg-[rgba(242,242,240,0.78)] backdrop-blur-xl shadow-[inset_0_-1px_0_var(--hair)] flex items-center justify-between px-8 h-[68px] shrink-0">
+          <h1 className="font-sans font-bold text-[22px] text-[var(--ink)] tracking-[-0.03em]">
             {greeting ? `${timeOfDay}, ${displayName}!` : title}
           </h1>
           <div className="flex items-center gap-3">
@@ -62,8 +62,8 @@ export function AppLayout({ children, title, greeting = false }: AppLayoutProps)
               <Share2 className="w-3.5 h-3.5" />
               Share
             </button>
-            <div className="flex items-center gap-2.5 pl-3 border-l border-[var(--rule)]">
-              <div className="w-8 h-8 rounded-full bg-[var(--purple-lt)] text-[var(--purple)] flex items-center justify-center text-[13px] font-semibold border border-[var(--rule)] shrink-0">
+            <div className="flex items-center gap-2.5 pl-4 ml-1 shadow-[inset_1px_0_0_var(--hair)]">
+              <div className="w-8 h-8 rounded-full bg-[var(--accent-soft)] text-[var(--accent-deep)] flex items-center justify-center text-[13px] font-bold shadow-[inset_0_0_0_1px_var(--hair)] shrink-0">
                 {initials}
               </div>
               <span className="font-sans font-semibold text-[13.5px] text-[var(--ink)]">{name || email || "Loading…"}</span>
@@ -71,15 +71,17 @@ export function AppLayout({ children, title, greeting = false }: AppLayoutProps)
           </div>
         </header>
 
-        {/* Page content — fades in on every navigation */}
+        {/* Page content.
+
+            This previously wrapped every dashboard page in a 900ms
+            opacity-0 fade. Two problems: `initial` is server-rendered as an
+            inline style, so the entire app shipped invisible in raw HTML and
+            stayed blank if the bundle was slow or failed; and 900ms is past
+            the 700ms ceiling the motion system sets, which made every
+            navigation feel like a load. Plain container now — the page is
+            simply there. */}
         <main className="flex-1 p-8 overflow-x-hidden">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
-          >
-            {children}
-          </motion.div>
+          {children}
         </main>
       </div>
     </div>

@@ -7,10 +7,19 @@ import { AppLayout } from "@/components/AppLayout";
 import { GlassPanel } from "@/components/GlassPanel";
 import type { CampaignRow } from "@/app/api/v1/campaigns/route";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 16 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 export default function CampaignsPage() {
@@ -47,7 +56,7 @@ export default function CampaignsPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[720px]">
                 <thead>
-                  <tr className="border-b border-[var(--rule)]">
+                  <tr className="border-b border-[var(--hair)]">
                     {["CAMPAIGN / SOURCE", "LEADS", "SHARE", "HOT", "QUALIFIED", "QUALIFICATION RATE"].map((h, i) => (
                       <th key={h} className={`py-3.5 px-5 font-sans font-semibold text-[10px] uppercase tracking-wider text-[var(--ink3)] ${i > 0 ? "text-right" : "text-left"}`}>
                         {h}
@@ -61,7 +70,7 @@ export default function CampaignsPage() {
                       key={c.name}
                       initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 + i * 0.04 }}
-                      className="border-b border-[var(--rule)] last:border-0 hover:bg-[var(--bg)] transition-colors"
+                      className="border-b border-[var(--hair)] last:border-0 hover:bg-[var(--bg)] transition-colors"
                     >
                       <td className="py-4 px-5">
                         <p className="font-sans font-semibold text-[13px] text-[var(--ink)]">{c.name}</p>

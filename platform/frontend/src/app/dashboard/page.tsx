@@ -16,10 +16,19 @@ import { useToast } from "@/components/ToastProvider";
 import { LeadStatusBadge, BucketBadge, ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 import type { DashboardSummary } from "@/app/api/v1/dashboard/route";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 10 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 const STATUS_LABELS: Record<string, string> = {
@@ -35,7 +44,7 @@ const STATUS_COLORS: Record<string, string> = {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-[var(--rule)] rounded-2xl p-4 min-w-[160px]" style={{ boxShadow: "0 8px 24px rgba(13,13,13,0.08)" }}>
+    <div className="bg-white shadow-[inset_0_0_0_1px_var(--hair)] rounded-2xl p-4 min-w-[160px]" style={{ boxShadow: "0 8px 24px rgba(13,13,13,0.08)" }}>
       <p className="font-sans font-semibold text-[13px] text-[var(--ink)] mb-3">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center justify-between gap-4 mb-1.5 last:mb-0">
@@ -255,12 +264,12 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--ink2)]">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#5B4FF5" }} />Captured
+                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#C1662E" }} />Captured
               </div>
               <div className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--ink2)]">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#8A80FF" }} />Qualified
+                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#E8A96C" }} />Qualified
               </div>
-              <div className="flex items-center bg-[var(--bg)] border border-[var(--rule)] rounded-lg p-1">
+              <div className="flex items-center bg-[var(--bg)] shadow-[inset_0_0_0_1px_var(--hair)] rounded-lg p-1">
                 {(["daily", "weekly"] as const).map(g => (
                   <button key={g} onClick={() => setChartGrouping(g)}
                     className={`px-2.5 py-1 rounded-md text-[11px] font-semibold capitalize transition-all ${chartGrouping === g ? "bg-white shadow-sm text-[var(--purple)]" : "text-[var(--ink3)]"}`}>
@@ -281,8 +290,8 @@ export default function DashboardPage() {
                   interval={chartGrouping === "daily" ? 4 : 0} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(91,79,245,0.05)" }} />
-                <Bar dataKey="captured" name="Captured" fill="#5B4FF5" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="qualified" name="Qualified" fill="#8A80FF" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="captured" name="Captured" fill="#C1662E" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="qualified" name="Qualified" fill="#E8A96C" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -317,7 +326,7 @@ export default function DashboardPage() {
       {/* ── Row 3: Recent leads + Status distribution ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <motion.div {...fadeUp(0.35)} className="lg:col-span-2 saas-card overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--rule)]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--hair)]">
             <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)]">Recent Leads</h3>
             <button className="text-[12px] font-semibold text-[var(--purple)] hover:underline flex items-center gap-1" onClick={() => router.push("/leads")}>
               View All <ExternalLink className="w-3 h-3" />
@@ -326,7 +335,7 @@ export default function DashboardPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[600px]">
               <thead>
-                <tr className="border-b border-[var(--rule)]">
+                <tr className="border-b border-[var(--hair)]">
                   {["LEAD", "SOURCE", "CHANNEL", "BUCKET", "STATUS"].map(h => (
                     <th key={h} className="py-3 px-4 font-sans font-semibold text-[10px] uppercase tracking-wider text-[var(--ink3)] text-left first:pl-6">
                       {h}
@@ -342,7 +351,7 @@ export default function DashboardPage() {
                   <motion.tr key={row.id}
                     initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 + i * 0.04 }}
-                    className="border-b border-[var(--rule)] last:border-0 hover:bg-[var(--bg)] cursor-pointer transition-colors"
+                    className="border-b border-[var(--hair)] last:border-0 hover:bg-[var(--bg)] cursor-pointer transition-colors"
                     onClick={() => router.push(`/leads/${row.id}`)}
                   >
                     <td className="py-3.5 px-4 pl-6">

@@ -125,7 +125,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
       </button>
 
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="saas-card p-6 mb-5 flex flex-wrap items-center justify-between gap-4">
+      <motion.div initial={false} animate={{ opacity: 1, y: 0 }} className="saas-card p-6 mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1.5">
             <h2 className="font-sans font-semibold text-[20px] text-[var(--ink)]">{lead.firstName} {lead.lastName}</h2>
@@ -155,7 +155,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left: BANT + notes + score history */}
         <div className="lg:col-span-2 flex flex-col gap-5">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="saas-card p-6">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="saas-card p-6">
             <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)] mb-4">BANT Qualification</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
               {Object.entries(lead.bant).map(([key, value]) => (
@@ -166,7 +166,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
               ))}
             </div>
             {lead.qualificationNotes && (
-              <div className="p-4 rounded-xl bg-[var(--bg)] border border-[var(--rule)]">
+              <div className="p-4 rounded-xl bg-[var(--bg)] shadow-[inset_0_0_0_1px_var(--hair)]">
                 <p className="font-sans font-semibold text-[10px] uppercase tracking-wider text-[var(--ink3)] mb-1.5">AI Qualification Notes</p>
                 <p className="font-sans text-[13px] text-[var(--ink2)] leading-relaxed">{lead.qualificationNotes}</p>
               </div>
@@ -180,7 +180,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
           </motion.div>
 
           {chartData.length > 0 && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card p-6">
+            <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)]">Score History</h3>
                 <span className="font-sans font-semibold text-[24px] text-[var(--ink)]">{lead.score}</span>
@@ -191,7 +191,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} />
                     <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="score" stroke="#5B4FF5" strokeWidth={2.5} dot={{ r: 3, fill: "#5B4FF5" }} />
+                    <Line type="monotone" dataKey="score" stroke="#C1662E" strokeWidth={2.5} dot={{ r: 3, fill: "#C1662E" }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -199,7 +199,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
           )}
 
           {/* Conversation timeline */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="saas-card p-6">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="saas-card p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)] flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 text-[var(--ink3)]" /> Conversation
@@ -218,7 +218,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                   const isOut = m.direction === "outbound";
                   return (
                     <div key={m.id} className={`flex flex-col max-w-[80%] ${isOut ? "self-end items-end" : "self-start items-start"}`}>
-                      <div className={`text-[13px] leading-relaxed px-3.5 py-2.5 rounded-2xl ${isOut ? "bg-[var(--purple)] text-white" : "bg-[var(--bg)] text-[var(--ink)] border border-[var(--rule)]"}`}>
+                      <div className={`text-[13px] leading-relaxed px-3.5 py-2.5 rounded-2xl ${isOut ? "bg-[var(--purple)] text-white" : "bg-[var(--bg)] text-[var(--ink)] shadow-[inset_0_0_0_1px_var(--hair)]"}`}>
                         {m.content}
                       </div>
                       <span className="text-[10px] text-[var(--ink3)] mt-1 font-sans">
@@ -234,7 +234,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
         {/* Right: contact + activity log */}
         <div className="flex flex-col gap-5">
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="saas-card p-6">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="saas-card p-6">
             <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)] mb-4">Contact Info</h3>
             <div className="flex flex-col gap-3">
               <div>
@@ -252,7 +252,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card p-6">
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="saas-card p-6">
             <h3 className="font-sans font-semibold text-[15px] text-[var(--ink)] mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-[var(--ink3)]" /> Activity Log
             </h3>

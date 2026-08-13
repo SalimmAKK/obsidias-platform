@@ -84,7 +84,7 @@ function LoginForm() {
   return (
     <div className="relative min-h-screen flex items-center justify-center p-6 bg-[var(--bg)]">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
         className="relative z-10 w-full max-w-[420px]"
@@ -92,7 +92,7 @@ function LoginForm() {
         <GlassPanel className="p-8 md:p-10">
 
           {!configured && (
-            <div className="mb-6 p-3 rounded-lg border border-[var(--rule)] bg-[var(--card2)] flex items-start gap-2.5">
+            <div className="mb-6 p-3 rounded-lg shadow-[inset_0_0_0_1px_var(--hair)] bg-[var(--card2)] flex items-start gap-2.5">
               <AlertCircle size={16} className="text-[var(--purple)] shrink-0 mt-0.5" />
               <span className="text-[12px] font-sans font-medium text-[var(--ink2)] leading-relaxed">
                 Dev mode: Supabase isn't configured. Add credentials to <code className="font-mono">.env.local</code> to enable sign in.
@@ -113,7 +113,7 @@ function LoginForm() {
 
           {/* Tab Selector */}
           {tab !== "forgot" && (
-            <div className="relative flex w-full mb-8 bg-[var(--card2)] p-1 rounded-lg border border-[var(--rule)]">
+            <div className="relative flex w-full mb-8 bg-[var(--card2)] p-1 rounded-lg shadow-[inset_0_0_0_1px_var(--hair)]">
               <button
                 type="button"
                 className={`flex-1 py-2 text-[13px] font-sans font-semibold transition-all relative rounded-md ${tab === "signin" ? "text-[var(--purple)]" : "text-[var(--ink3)] hover:text-[var(--ink)]"}`}
@@ -122,7 +122,7 @@ function LoginForm() {
                 {tab === "signin" && (
                   <motion.div
                     layoutId="active-login-tab"
-                    className="absolute inset-0 bg-white rounded-md border border-[var(--rule)]"
+                    className="absolute inset-0 bg-white rounded-md shadow-[inset_0_0_0_1px_var(--hair)]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -136,7 +136,7 @@ function LoginForm() {
                 {tab === "signup" && (
                   <motion.div
                     layoutId="active-login-tab"
-                    className="absolute inset-0 bg-white rounded-md border border-[var(--rule)]"
+                    className="absolute inset-0 bg-white rounded-md shadow-[inset_0_0_0_1px_var(--hair)]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -155,7 +155,7 @@ function LoginForm() {
 
           {tab === "forgot" && resetSent ? (
             <div className="flex flex-col items-center gap-4 text-center py-4">
-              <div className="w-11 h-11 rounded-xl bg-[var(--card2)] border border-[var(--rule)] flex items-center justify-center">
+              <div className="w-11 h-11 rounded-xl bg-[var(--card2)] shadow-[inset_0_0_0_1px_var(--hair)] flex items-center justify-center">
                 <Mail className="w-5 h-5 text-[var(--purple)]" />
               </div>
               <p className="font-sans text-[13.5px] text-[var(--ink)] font-semibold">Check your inbox</p>

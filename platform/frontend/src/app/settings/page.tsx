@@ -9,10 +9,19 @@ import { Modal } from "@/components/Modal";
 import { useToast } from "@/components/ToastProvider";
 import { ChannelIcon } from "@/components/LeadBadges";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 18 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 const CHANNELS = [
@@ -137,7 +146,7 @@ export default function SettingsPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {CHANNELS.map(ch => (
-                <div key={ch.id} className="p-5 rounded-2xl border border-[var(--rule)] bg-white flex flex-col gap-3">
+                <div key={ch.id} className="p-5 rounded-2xl shadow-[inset_0_0_0_1px_var(--hair)] bg-white flex flex-col gap-3">
                   <div className="w-10 h-10 rounded-full bg-[var(--bg)] flex items-center justify-center">
                     <ChannelIcon channel={ch.id} className="w-5 h-5" />
                   </div>
@@ -189,7 +198,7 @@ export default function SettingsPage() {
           <p className="font-sans text-[14px] text-[var(--ink2)] leading-relaxed">
             All <strong>leads, conversations, messages, and score history</strong> for your agency will be permanently wiped.
           </p>
-          <div className="flex items-center justify-end gap-3 pt-2 border-t border-[var(--rule)]">
+          <div className="flex items-center justify-end gap-3 pt-2 border-t border-[var(--hair)]">
             <button className="ghost-button" onClick={() => setDangerOpen(false)} disabled={deleting}>Cancel</button>
             <motion.button
               whileTap={{ scale: 0.96 }}

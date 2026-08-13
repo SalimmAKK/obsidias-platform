@@ -1,56 +1,99 @@
 /* ============================================================================
-   Obsidias shared design tokens
+   Obsidias design tokens — soft premium
    ============================================================================
-   Single source of truth for color, radius, and type family, extracted from
-   the landing page redesign. Landing.css and globals.css both import this
-   file and reference these variables instead of redefining their own
-   palette. If a value needs to change, it changes here once.
+   Single source of truth for colour, radius, elevation, and type family across
+   both the marketing site and the dashboard.
 
-   Do not add component-specific values here (card padding, button height,
-   etc). Those stay local to whichever stylesheet owns that component. This
-   file is strictly the palette, the radius scale, and the type family.
+   The system: silver-grey canvas (never pure white), near-black ink (never
+   pure #000), hairline rings instead of solid grey borders, wide diffuse
+   shadows instead of hard drop shadows, and generous squircle radii with
+   concentric inner values for the double-bezel card pattern.
+
+   Do not add component-specific values here (card padding, button height).
+   Those stay local to whichever stylesheet owns that component.
    ============================================================================ */
 
 :root {
-  /* ── Ink scale (text) ─────────────────────────────────────────────────── */
-  --ink:        #0D0D0D;
-  --ink2:       #3A3A3A;
-  --ink3:       #7A7A7A;
-  --ink4:       #B0ADA8;
+  /* ── Canvas and surfaces ────────────────────────────────────────────────
+     --canvas is the page. --shell is the outer half of a double-bezel card,
+     --core is its inner panel. --sunk is for recessed wells inside a core. */
+  --canvas:      #F2F2F0;
+  --canvas-warm: #FDFBF7;
+  --shell:       #FFFFFF;
+  --core:        #FAFAF9;
+  --sunk:        #F4F4F2;
 
-  /* ── Surfaces ──────────────────────────────────────────────────────────── */
-  --bg:         #F9F8F6;
-  --card:       #FFFFFF;
-  --card2:      #F4F2EE;
-  --rule:       #E5E3DC;
+  /* ── Ink scale ──────────────────────────────────────────────────────────
+     Zinc-950 rather than #000 — pure black reads as cheap against a warm
+     canvas and crushes on OLED. */
+  --ink:   #18181B;
+  --ink2:  #52525B;
+  --ink3:  #71717A;
+  --ink4:  #A1A1AA;
 
-  /* ── Accent (used sparingly, on purpose) ──────────────────────────────── */
-  --purple:      #5B4FF5;
-  --purple-lt:   #EEEDFB;
-  --purple-dim:  rgba(91, 79, 245, 0.55);
+  /* ── Hairlines ──────────────────────────────────────────────────────────
+     Always alpha-based so they sit correctly on any surface, never a solid
+     grey that goes muddy on the darker canvas. */
+  --hair:        rgba(24, 24, 27, 0.06);
+  --hair-strong: rgba(24, 24, 27, 0.10);
+  --hair-dark:   rgba(255, 255, 255, 0.10);
 
-  /* ── Status ────────────────────────────────────────────────────────────── */
-  --green:      #0D9B6E;
-  --green-lt:   #E4F7F1;
-  --red:        #D0453A;
-  --red-lt:     #FBEAE8;
-  --amber:      #92400E;
-  --amber-lt:   #FFF7E6;
+  /* ── Accent ─────────────────────────────────────────────────────────────
+     Terracotta carried over from the previous brand pass. Used sparingly:
+     eyebrows, active states, fills, and the one accent surface per page.
+     Primary CTAs are ink, not accent — that's what keeps it feeling
+     restrained rather than loud. */
+  --accent:      #C1662E;
+  --accent-deep: #A8501F;
+  --accent-soft: #F7EADF;
+  --accent-dim:  #E8A96C;
 
-  /* ── Dark surfaces (used for high-contrast bands and the demo UI) ────── */
-  --dark:       #0D0D0F;
-  --dark2:      #17171A;
-  --dark-rule:  #29292D;
+  /* ── Inverted surfaces (closing bands, dark bento cards) ────────────── */
+  --deep:      #1C1C1F;
+  --deep2:     #26262A;
+  --deep-ink:  #F4F4F2;
+  --deep-ink2: rgba(244, 244, 242, 0.62);
 
-  /* ── Radius scale ──────────────────────────────────────────────────────── */
-  --radius-sm:  7px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  16px;
+  /* ── Status ─────────────────────────────────────────────────────────── */
+  --green:    #2F6E52;
+  --green-lt: #E7F0EA;
+  --red:      #B4483C;
+  --red-lt:   #F8EBE9;
+  --amber:    #92400E;
+  --amber-lt: #FBF0E2;
 
-  /* ── Type ──────────────────────────────────────────────────────────────── */
-  /* var(--font-inter) is set by next/font in layout.tsx; the literal 'Inter'
-     name and system fallbacks only matter before that font has loaded. */
-  --font:       var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono:  var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
+  /* ── Radii ──────────────────────────────────────────────────────────────
+     Squircle scale. --r-shell/--r-core are the concentric pair: an inner
+     panel inset by --bezel must drop its radius by the same amount or the
+     corners visibly diverge. */
+  --r-xs:    10px;
+  --r-sm:    14px;
+  --r-md:    20px;
+  --r-lg:    28px;
+  --r-xl:    32px;
+  --r-2xl:   40px;
+  --r-pill:  999px;
+
+  --bezel:   6px;
+  --r-shell: var(--r-xl);
+  --r-core:  calc(var(--r-xl) - var(--bezel));
+
+  /* ── Elevation ──────────────────────────────────────────────────────────
+     Wide, low-opacity, heavily negative spread. No shadow-md/lg equivalents. */
+  --lift-0: 0 1px 2px rgba(24, 24, 27, 0.03);
+  --lift-1: 0 20px 40px -15px rgba(24, 24, 27, 0.05), 0 1px 2px rgba(24, 24, 27, 0.03);
+  --lift-2: 0 30px 60px -20px rgba(24, 24, 27, 0.09), 0 1px 2px rgba(24, 24, 27, 0.04);
+  --lift-3: 0 40px 80px -24px rgba(24, 24, 27, 0.14), 0 1px 2px rgba(24, 24, 27, 0.05);
+
+  /* ── Type ───────────────────────────────────────────────────────────────
+     var(--font-geist) / var(--font-geist-mono) are set by next/font in
+     layout.tsx. Inter is deliberately absent — it's banned by the design
+     system this was built to. */
+  --font:      var(--font-geist), 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+
+  /* ── Motion ─────────────────────────────────────────────────────────────
+     One movement curve for the whole system. See styles/motion.css. */
+  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
 }

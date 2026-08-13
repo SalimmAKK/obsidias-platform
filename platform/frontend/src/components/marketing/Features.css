@@ -1,171 +1,92 @@
-/* ── FEATURES HERO ────────────────────────────────────────────────────────── */
-.l-fhero {
-  padding: 150px 2.5rem 88px;
-}
+/* ============================================================================
+   Features page — soft premium
+   Base system lives in Marketing.css; this is page-specific only.
+   ========================================================================= */
 
-.l-hero-eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--purple);
-  margin-bottom: 1.375rem;
-}
+.f-main { position: relative; z-index: 1; }
 
-.l-fhero-title {
-  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
-  font-weight: 500;
-  line-height: 1.24;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  max-width: 680px;
-  margin-bottom: 1.5rem;
-}
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.f-hero { padding: clamp(140px, 17vh, 190px) 0 clamp(48px, 6vw, 72px); }
+.f-hero-title { margin: 22px 0 26px; max-width: 14ch; }
 
-.l-hero-sub {
-  font-size: 1.02rem;
-  color: var(--ink2);
-  max-width: 560px;
-  line-height: 1.7;
-}
-
-/* ── FINAL CTA (this page's copy of Landing's shared final-cta look) ────── */
-.l-final {
-  background: var(--ink);
-  padding: 108px 2.5rem;
-  text-align: center;
-}
-
-.l-final h2 {
-  font-size: clamp(1.85rem, 4vw, 2.6rem);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  color: #fff;
-  margin-bottom: 1.125rem;
-  line-height: 1.28;
-}
-
-.l-final p {
-  font-size: 0.975rem;
-  color: rgba(255, 255, 255, 0.52);
-  max-width: 420px;
-  margin: 0 auto 2.25rem;
-  line-height: 1.65;
-}
-
-/* ── FEATURE LIST ─────────────────────────────────────────────────────────── */
-.l-flist {
-  background: #fff;
-  padding: 24px 2.5rem 104px;
-  border-top: 0.5px solid var(--rule);
-}
-
-.l-flist-grid {
+/* ── GRID ────────────────────────────────────────────────────────────────── */
+.f-list { padding-bottom: clamp(72px, 9vw, 112px); }
+.f-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
-.l-fcard {
-  background: var(--card2);
-  border: 0.5px solid var(--rule);
-  border-radius: var(--r);
-  padding: 1.75rem;
-  display: flex;
-  flex-direction: column;
-  transition: border-color 0.2s, transform 0.2s;
+.f-card { display: flex; flex-direction: column; height: 100%; }
+.f-card-head { display: flex; align-items: center; gap: 13px; margin-bottom: 12px; }
+.f-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: var(--r-xs);
+  background: var(--shell);
+  box-shadow: inset 0 0 0 1px var(--hair);
+  color: var(--accent);
+  font-size: 18px;
 }
-.l-fcard:hover {
-  border-color: var(--ink3);
-  transform: translateY(-2px);
-}
-
-.l-fcard-head {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.6rem;
-}
-
-.l-fcard-icon {
-  font-size: 19px;
-  color: var(--purple);
-  flex-shrink: 0;
-}
-
-.l-fcard h3 {
-  font-size: 15.5px;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.l-fcard-intro {
-  font-size: 12.5px;
+.f-intro {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--hair);
   color: var(--ink3);
-  line-height: 1.6;
-  margin-bottom: 1.125rem;
-  padding-bottom: 1.125rem;
-  border-bottom: 0.5px solid var(--rule);
 }
 
-/* ── CHECKLIST ────────────────────────────────────────────────────────────── */
-.l-fcheck-list {
+.f-check {
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+  display: flex; flex-direction: column; gap: 11px;
   margin-top: auto;
 }
-
-.l-fcheck-list li {
-  font-size: 12.5px;
-  color: var(--ink2);
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  line-height: 1.5;
+.f-check li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 13.5px; color: var(--ink2); line-height: 1.5;
 }
-
-.l-fcheck-list li::before {
+.f-check li::before {
   content: '';
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--green-lt);
-  border: 0.5px solid var(--green);
-  flex-shrink: 0;
-  margin-top: 1px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230D9B6E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 9px 9px;
+  width: 16px; height: 16px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 1px;
+  background-color: var(--accent-soft);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23A8501F' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center; background-size: 10px 10px;
 }
 
-/* ── CTA ROW (this page's variant of the final CTA section) ─────────────── */
-.l-fcta-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
+/* ── PIPELINE ARTIFACT ───────────────────────────────────────────────────── */
+.f-pipeline { padding: 0 0 clamp(72px, 9vw, 112px); }
+.f-pipeline-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
 }
+.f-pipeline-title { margin: 20px 0 16px; }
+.f-pipeline-lede { margin-bottom: 0; }
 
-.l-fcta-outline {
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #fff;
+/* ── CLOSING BAND ────────────────────────────────────────────────────────── */
+.f-cta-wrap { padding: 0 0 clamp(64px, 8vw, 96px); }
+.f-cta {
+  background: var(--deep);
+  border-radius: var(--r-2xl);
+  padding: clamp(48px, 7vw, 88px) clamp(28px, 5vw, 72px);
+  box-shadow: inset 0 0 0 1px var(--hair-dark), var(--lift-3);
 }
-.l-fcta-outline:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.06);
-}
+.f-cta-title { color: var(--deep-ink) !important; margin: 22px 0 16px; max-width: 18ch; }
+.f-cta-title .o-dim { color: rgba(244, 244, 242, 0.42); }
+.f-cta-lede { color: var(--deep-ink2); margin-bottom: 32px; }
+.f-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
+.f-btn-outline {
+  background: transparent;
+  color: var(--deep-ink);
+  box-shadow: inset 0 0 0 1px var(--hair-dark);
+  padding: 12px 22px;
+}
+.f-btn-outline:hover { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
-  .l-fhero { padding: 120px 1.5rem 64px; }
-  .l-flist { padding: 16px 1.5rem 76px; }
-  .l-flist-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 400px) {
-  .l-fhero { padding: 112px 1.25rem 56px; }
-  .l-flist { padding: 12px 1.25rem 64px; }
+  .f-grid { grid-template-columns: 1fr; }
+  .f-hero { padding-top: 128px; }
 }

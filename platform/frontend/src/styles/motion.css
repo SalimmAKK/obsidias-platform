@@ -1,0 +1,203 @@
+/* ============================================================================
+   Obsidias motion system
+   ============================================================================
+   Five primitives, used consistently, rather than a bespoke effect per
+   component. Import once per stylesheet root; every animated surface on the
+   site should be reaching for something in here.
+
+   THE RULES THIS ENCODES
+   - One movement curve: var(--ease). Anything that changes position, scale,
+     or clip uses it. Colour and opacity-only transitions are allowed to use
+     the default easing instead — movement and colour read as two different
+     things, and forcing them through one curve makes colour feel sluggish.
+   - Duration ladder: hover colour 150-250ms, small movement ~200ms, single
+     element reveals 350-550ms, section reveals 600-700ms. Nothing outside
+     150-700ms.
+   - Content first, animation second. Every primitive below is written so the
+     element is CORRECT and READABLE if JavaScript never runs. The JS-gated
+     ones (.m-reveal, .m-lines) only hide content after a `.m-js` class has
+     been added to <html> by script — no JS, no class, no hidden content.
+   - prefers-reduced-motion: final state instantly, no exceptions.
+   ========================================================================= */
+
+/* ── 1. SCROLL REVEAL ────────────────────────────────────────────────────
+   Fade up 16px, fires once via IntersectionObserver. Stagger siblings with
+   .m-d1 through .m-d5 (70ms apart).
+
+   Note the `.m-js` gate: without it, an element that never gets observed
+   (JS disabled, script error, observer never fires) would sit at opacity 0
+   forever. This is the fix for the blank-until-reload class of bug — the
+   default state in raw HTML is visible. */
+.m-js .m-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 600ms var(--ease),
+    transform 600ms var(--ease);
+}
+.m-js .m-reveal.m-in {
+  opacity: 1;
+  transform: none;
+}
+
+.m-d1 { transition-delay: 70ms; }
+.m-d2 { transition-delay: 140ms; }
+.m-d3 { transition-delay: 210ms; }
+.m-d4 { transition-delay: 280ms; }
+.m-d5 { transition-delay: 350ms; }
+
+/* ── 2. ENTRANCE (above the fold) ────────────────────────────────────────
+   Same look as the reveal, but pure CSS keyframes with no JS gate at all —
+   for hero content that must never wait on hydration or an observer. */
+@keyframes m-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.m-enter { animation: m-enter 600ms var(--ease) both; }
+.m-e1 { animation-delay: 80ms; }
+.m-e2 { animation-delay: 160ms; }
+.m-e3 { animation-delay: 240ms; }
+.m-e4 { animation-delay: 320ms; }
+
+/* ── 3. CARD HOVER ───────────────────────────────────────────────────────
+   Lift + deepening shadow, plus one intentional detail: an accent rule
+   sweeping in along the top edge (scaleX from left). The sweep is what stops
+   this reading as a generic hover-lift. */
+.m-card {
+  position: relative;
+  transition:
+    transform 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+.m-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: var(--r-pill);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 350ms var(--ease);
+  pointer-events: none;
+}
+.m-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--lift-2);
+}
+.m-card:hover::after { transform: scaleX(1); }
+
+/* ── 4. VALUE FILL ───────────────────────────────────────────────────────
+   scaleX from 0 for anything representing a measured value — a score, a
+   meter, a progress bar. Filling reads as measured; fading reads as merely
+   appearing, which is the wrong signal for a number.
+
+   Pure CSS keyframes so it never depends on JS timing. Pair with an inline
+   animation-delay computed from the item's index for a staggered sweep, and
+   `backwards` fill-mode holds it at 0% through that delay so nothing flashes
+   in the wrong state. */
+@keyframes m-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.m-fill {
+  transform-origin: left;
+  animation: m-fill 500ms var(--ease) backwards;
+}
+
+@keyframes m-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.m-fade { animation: m-fade 400ms ease backwards; }
+
+/* ── 5. LINE REVEAL (headlines only) ─────────────────────────────────────
+   Lines rising into place behind a clip mask, staggered ~90ms. Deliberately
+   reserved for the one or two headlines that carry the page — using it on
+   every heading turns a moment into a tic.
+
+   Same .m-js gate as the scroll reveal, for the same reason. */
+.m-lines { display: block; }
+.m-line-mask { display: block; overflow: hidden; }
+.m-line { display: block; }
+
+/* Scroll-triggered variant, for a headline further down the page. */
+.m-js .m-lines:not(.m-lines-auto) .m-line {
+  transform: translateY(100%);
+  transition: transform 700ms var(--ease);
+}
+.m-js .m-lines.m-in .m-line { transform: none; }
+.m-js .m-lines.m-in .m-line-mask:nth-child(2) .m-line { transition-delay: 90ms; }
+.m-js .m-lines.m-in .m-line-mask:nth-child(3) .m-line { transition-delay: 180ms; }
+.m-js .m-lines.m-in .m-line-mask:nth-child(4) .m-line { transition-delay: 270ms; }
+
+/* Load-triggered variant, for the hero. Pure keyframes, no .m-js gate and
+   no observer — an above-the-fold headline must never be waiting on
+   hydration to become visible, which is exactly the failure the gate above
+   is designed around. Use this one for anything already on screen at load. */
+@keyframes m-line-rise {
+  from { transform: translateY(100%); }
+  to   { transform: none; }
+}
+.m-lines-auto .m-line { animation: m-line-rise 700ms var(--ease) both; }
+.m-lines-auto .m-line-mask:nth-child(2) .m-line { animation-delay: 90ms; }
+.m-lines-auto .m-line-mask:nth-child(3) .m-line { animation-delay: 180ms; }
+.m-lines-auto .m-line-mask:nth-child(4) .m-line { animation-delay: 270ms; }
+
+/* ── AMBIENT DRIFT ───────────────────────────────────────────────────────
+   The hero mesh blob. Transform-only, very slow, very low opacity. */
+@keyframes m-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(4%, -3%, 0) scale(1.08); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.m-drift { animation: m-drift 28s var(--ease-soft) infinite; }
+
+/* ── MARQUEE ─────────────────────────────────────────────────────────────
+   Applied to a duplicated track so the -50% wrap is seamless. Linear is
+   correct here and only here: a marquee with an eased curve visibly
+   stutters at every loop boundary. */
+@keyframes m-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.m-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: m-marquee 40s linear infinite;
+}
+.m-marquee:hover .m-marquee-track { animation-play-state: paused; }
+
+/* ── FOCUS ───────────────────────────────────────────────────────────────
+   :focus-visible so it doesn't fire on mouse clicks. Offset so it reads as
+   a ring around the element rather than a border on it. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+
+/* ── REDUCED MOTION ──────────────────────────────────────────────────────
+   Final state, instantly. Note this resets transition-delay too — otherwise
+   a staggered group still visibly cascades, just without the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .m-js .m-reveal,
+  .m-js .m-reveal.m-in,
+  .m-enter,
+  .m-fade {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+  }
+  .m-line { transform: none !important; transition: none !important; animation: none !important; }
+  .m-fill { animation: none !important; transform: none !important; }
+  .m-card, .m-card:hover { transform: none !important; transition: none !important; }
+  .m-card::after { display: none; }
+  .m-drift { animation: none !important; }
+  .m-marquee-track { animation: none !important; }
+}

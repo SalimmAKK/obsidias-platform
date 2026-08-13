@@ -1,133 +1,68 @@
-/* ── HERO ─────────────────────────────────────────────────────────────────── */
-.l-hhero {
-  padding: 150px 2.5rem 88px;
-}
+/* ============================================================================
+   How It Works page — soft premium
+   Base system lives in Marketing.css; this is page-specific only.
+   ========================================================================= */
 
-.l-hero-eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--purple);
-  margin-bottom: 1.375rem;
-}
+.h-main { position: relative; z-index: 1; }
 
-.l-hhero-title {
-  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
-  font-weight: 500;
-  line-height: 1.24;
-  letter-spacing: -0.025em;
-  color: var(--ink);
-  max-width: 680px;
-  margin-bottom: 1.5rem;
-}
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.h-hero { padding: clamp(140px, 17vh, 190px) 0 clamp(48px, 6vw, 72px); }
+.h-hero-title { margin: 22px 0 26px; max-width: 13ch; }
 
-.l-hero-sub {
-  font-size: 1.02rem;
-  color: var(--ink2);
-  max-width: 560px;
-  line-height: 1.7;
-}
+/* ── STEPS ───────────────────────────────────────────────────────────────── */
+.h-steps { padding-bottom: clamp(72px, 9vw, 112px); }
+.h-step-list { display: flex; flex-direction: column; gap: 14px; }
 
-/* ── STEP LIST ────────────────────────────────────────────────────────────── */
-.l-hsteps {
-  background: #fff;
-  padding: 24px 2.5rem 112px;
-  border-top: 0.5px solid var(--rule);
-}
-
-.l-hstep-list {
-  max-width: 780px;
-}
-
-.l-hstep {
+.h-step {
   display: grid;
-  grid-template-columns: 84px 1fr;
-  gap: 2rem;
-  padding: 2.25rem 0;
-  border-top: 0.5px solid var(--rule);
-}
-.l-hstep:first-child { border-top: none; padding-top: 1rem; }
-
-.l-hstep-num {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink4);
-  letter-spacing: 0.04em;
-  padding-top: 0.2rem;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 36px);
+  align-items: start;
 }
 
-.l-hstep-body h3 {
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--ink);
-  margin-bottom: 0.7rem;
-  line-height: 1.4;
-  max-width: 560px;
+.h-step-num {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: var(--r-xs);
+  background: var(--shell);
+  box-shadow: inset 0 0 0 1px var(--hair);
 }
+.h-step-num .o-mono { color: var(--accent); letter-spacing: 0.1em; }
 
-.l-hstep-body p {
-  font-size: 13.5px;
-  color: var(--ink2);
-  line-height: 1.75;
-  max-width: 560px;
-}
-
-.l-hstep-detail {
-  margin-top: 0.85rem;
+.h-step-body { max-width: 62ch; }
+.h-step-body .o-h3 { margin-bottom: 10px; }
+.h-step-text { margin-bottom: 12px; }
+.h-step-detail {
   font-size: 12.5px;
   color: var(--ink4);
   line-height: 1.6;
+  padding-top: 12px;
+  border-top: 1px solid var(--hair);
 }
 
-/* ── FINAL CTA (this page's copy of Landing's shared final-cta look) ────── */
-.l-final {
-  background: var(--ink);
-  padding: 108px 2.5rem;
-  text-align: center;
+/* ── CLOSING BAND ────────────────────────────────────────────────────────── */
+.h-cta-wrap { padding: 0 0 clamp(64px, 8vw, 96px); }
+.h-cta {
+  background: var(--deep);
+  border-radius: var(--r-2xl);
+  padding: clamp(48px, 7vw, 88px) clamp(28px, 5vw, 72px);
+  box-shadow: inset 0 0 0 1px var(--hair-dark), var(--lift-3);
 }
+.h-cta-title { color: var(--deep-ink) !important; margin: 22px 0 16px; max-width: 18ch; }
+.h-cta-title .o-dim { color: rgba(244, 244, 242, 0.42); }
+.h-cta-lede { color: var(--deep-ink2); margin-bottom: 32px; }
+.h-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
 
-.l-final h2 {
-  font-size: clamp(1.85rem, 4vw, 2.6rem);
-  font-weight: 500;
-  letter-spacing: -0.025em;
-  color: #fff;
-  margin-bottom: 1.125rem;
-  line-height: 1.28;
+.h-btn-outline {
+  background: transparent;
+  color: var(--deep-ink);
+  box-shadow: inset 0 0 0 1px var(--hair-dark);
+  padding: 12px 22px;
 }
+.h-btn-outline:hover { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28); }
 
-.l-final p {
-  font-size: 0.975rem;
-  color: rgba(255, 255, 255, 0.52);
-  max-width: 420px;
-  margin: 0 auto 2.25rem;
-  line-height: 1.65;
-}
-
-.l-fcta-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.l-fcta-outline {
-  border-color: rgba(255, 255, 255, 0.24);
-  color: #fff;
-}
-.l-fcta-outline:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
-@media (max-width: 860px) {
-  .l-hhero { padding: 120px 1.5rem 64px; }
-  .l-hsteps { padding: 16px 1.5rem 84px; }
-  .l-hstep { grid-template-columns: 1fr; gap: 0.6rem; }
-}
-
-@media (max-width: 400px) {
-  .l-hhero { padding: 112px 1.25rem 56px; }
-  .l-hsteps { padding: 12px 1.25rem 72px; }
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .h-hero { padding-top: 128px; }
+  .h-step { grid-template-columns: 1fr; gap: 14px; }
 }

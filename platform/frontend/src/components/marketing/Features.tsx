@@ -1,24 +1,10 @@
 'use client';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { MarketingNav, MarketingFooter } from './MarketingChrome';
+import { PipelineArtifact } from './PipelineArtifact';
+import { useReveal } from '@/lib/useReveal';
 import './Marketing.css';
 import './Features.css';
-
-function useReveal() {
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) e.target.classList.add('in');
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -30px 0px' },
-    );
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
-}
 
 interface Feature {
   icon: string;
@@ -112,13 +98,14 @@ const FEATURES: Feature[] = [
 
 function FeaturesHero() {
   return (
-    <section className="l-fhero">
-      <div className="l-wide">
-        <p className="l-hero-eyebrow l-enter">Features</p>
-        <h1 className="l-fhero-title l-enter l-e1">
-          Everything the platform does, in plain terms.
+    <section className="f-hero">
+      <div className="o-wide">
+        <p className="o-eyebrow m-enter">Features</p>
+        <h1 className="o-display f-hero-title m-lines m-lines-auto">
+          <span className="m-line-mask"><span className="m-line">Everything it does,</span></span>
+          <span className="m-line-mask"><span className="m-line o-dim">in plain terms.</span></span>
         </h1>
-        <p className="l-hero-sub l-enter l-e2">
+        <p className="o-lede m-enter m-e2">
           No dashboard tour, no jargon. This is what actually happens to a
           lead from the moment they message your agency to the moment they
           are on your calendar.
@@ -130,23 +117,42 @@ function FeaturesHero() {
 
 function FeatureList() {
   return (
-    <section className="l-flist">
-      <div className="l-wide">
-        <div className="l-flist-grid">
-          {FEATURES.map((f, i) => (
-            <div className={`l-fcard reveal d${(i % 4) + 1}`} key={f.title}>
-              <div className="l-fcard-head">
-                <i className={`ti ${f.icon} l-fcard-icon`} aria-hidden="true" />
-                <h3>{f.title}</h3>
+    <section className="f-list">
+      <div className="o-wide f-grid">
+        {FEATURES.map((f, i) => (
+          <article className={`o-bezel m-card m-reveal m-d${(i % 3) + 1}`} key={f.title}>
+            <div className="o-bezel-core f-card">
+              <div className="f-card-head">
+                <span className="f-icon" aria-hidden="true"><i className={`ti ${f.icon}`} /></span>
+                <h3 className="o-h3">{f.title}</h3>
               </div>
-              <p className="l-fcard-intro">{f.intro}</p>
-              <ul className="l-fcheck-list">
-                {f.points.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
+              <p className="o-body f-intro">{f.intro}</p>
+              <ul className="f-check">
+                {f.points.map((point) => <li key={point}>{point}</li>)}
               </ul>
             </div>
-          ))}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PipelineSection() {
+  return (
+    <section className="f-pipeline">
+      <div className="o-wide f-pipeline-grid">
+        <div className="m-reveal">
+          <p className="o-eyebrow">Reporting</p>
+          <h2 className="o-h2 f-pipeline-title">The week, <span className="o-dim">without assembling it.</span></h2>
+          <p className="o-lede f-pipeline-lede">
+            Where leads entered, what cleared qualification, what a human
+            picked up, and what reached a calendar. Built for a weekly glance,
+            not a report someone exports and formats by hand.
+          </p>
+        </div>
+        <div className="m-reveal m-d1">
+          <PipelineArtifact />
         </div>
       </div>
     </section>
@@ -155,16 +161,22 @@ function FeatureList() {
 
 function FeaturesCta() {
   return (
-    <section className="l-final">
-      <div className="l-container">
-        <h2 className="reveal">See how the pieces fit together.</h2>
-        <p className="reveal d1">
-          The full walkthrough covers what happens at each step, from the
-          first message to a booked viewing.
-        </p>
-        <div className="l-fcta-row reveal d2">
-          <Link href="/how-it-works" className="btn-white">How it works</Link>
-          <Link href="/login" className="btn-outline l-fcta-outline">Request access</Link>
+    <section className="f-cta-wrap">
+      <div className="o-wide">
+        <div className="f-cta m-reveal">
+          <p className="o-eyebrow on-deep">Next</p>
+          <h2 className="o-h2 f-cta-title">See how the pieces <span className="o-dim">fit together.</span></h2>
+          <p className="o-lede f-cta-lede">
+            The full walkthrough covers what happens at each step, from the
+            first message to a booked viewing.
+          </p>
+          <div className="f-cta-row">
+            <Link href="/how-it-works" className="o-btn o-btn-light">
+              How it works
+              <span className="o-btn-icon" aria-hidden="true"><i className="ti ti-arrow-right" /></span>
+            </Link>
+            <Link href="/login" className="o-btn f-btn-outline">Request access</Link>
+          </div>
         </div>
       </div>
     </section>
@@ -176,10 +188,12 @@ export default function Features() {
 
   return (
     <>
+      <div className="o-mesh m-drift" aria-hidden="true" />
       <MarketingNav />
-      <main>
+      <main className="f-main">
         <FeaturesHero />
         <FeatureList />
+        <PipelineSection />
         <FeaturesCta />
       </main>
       <MarketingFooter />

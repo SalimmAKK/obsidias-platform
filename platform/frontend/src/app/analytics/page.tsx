@@ -11,10 +11,19 @@ import { GlassPanel } from "@/components/GlassPanel";
 import { ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 import type { AnalyticsResponse } from "@/app/api/v1/analytics/route";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 16 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 const STATUS_LABELS: Record<string, string> = {
@@ -30,7 +39,7 @@ const BUCKET_COLORS: Record<string, string> = { hot: "#C77DFF", warm: "#10B981",
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-[var(--rule)] rounded-2xl p-4 min-w-[140px]" style={{ boxShadow: "0 8px 24px rgba(13,13,13,0.08)" }}>
+    <div className="bg-white shadow-[inset_0_0_0_1px_var(--hair)] rounded-2xl p-4 min-w-[140px]" style={{ boxShadow: "0 8px 24px rgba(13,13,13,0.08)" }}>
       <p className="font-sans font-semibold text-[13px] text-[var(--ink)] mb-2">{label}</p>
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center justify-between gap-4">
@@ -118,7 +127,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10, fontWeight: 600 }} dy={8} interval={1} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} allowDecimals={false} />
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(91,79,245,0.05)" }} />
-                <Bar dataKey="leads" name="Leads" fill="#5B4FF5" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="leads" name="Leads" fill="#C1662E" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

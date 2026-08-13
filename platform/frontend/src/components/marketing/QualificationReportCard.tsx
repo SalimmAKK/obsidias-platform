@@ -92,6 +92,7 @@ export function QualificationReportCard() {
       <style>{CSS}</style>
 
       <article className="qr">
+        <div className="qr-core">
         <header className="qr-head">
           <div>
             <p className="qr-mono qr-dim">AI qualification</p>
@@ -136,6 +137,7 @@ export function QualificationReportCard() {
         <p className="qr-disclaimer qr-fade" style={{ animationDelay: `${OVERALL_DELAY + 200}ms` }}>
           Illustrative example, not a real lead record.
         </p>
+        </div>
       </article>
     </div>
   );
@@ -150,43 +152,52 @@ export default QualificationReportCard;
    original's forest green. */
 const CSS = `
 .qr-wrap{
-  --qr-ink:#2B2724; --qr-paper:#fff; --qr-muted:#8B8580; --qr-line:#E4DED7; --qr-chalk:#F5F1EC;
-  --qr-b1:#D8D2CA; --qr-b2:#E8A96C; --qr-b3:#D98A4E; --qr-b4:#A8501F;
+  --qr-ink:#18181B; --qr-paper:#fff; --qr-muted:#71717A; --qr-faint:#A1A1AA;
+  --qr-line:rgba(24,24,27,0.06); --qr-chalk:#FAFAF9; --qr-sunk:#F4F4F2;
+  --qr-b1:#D9D9D6; --qr-b2:#E8A96C; --qr-b3:#C1662E; --qr-b4:#A8501F;
   --qr-ease: cubic-bezier(.22,.61,.36,1);
-  font-family: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: var(--font-geist), 'Geist', system-ui, sans-serif;
 }
+/* Double bezel: outer shell holds the ring + shadow + 6px of padding, inner
+   core drops its radius by exactly that so the corners stay concentric. */
 .qr{
-  max-width:460px; margin:0 auto; background:var(--qr-paper); border:1px solid var(--qr-line);
-  padding:26px; border-radius:6px; transform:rotate(-0.6deg);
-  box-shadow:0 28px 60px -32px rgba(43,39,36,.32);
+  max-width:470px; margin:0 auto; background:#fff;
+  padding:6px; border-radius:32px; transform:rotate(-0.5deg);
+  box-shadow: inset 0 0 0 1px var(--qr-line), 0 30px 60px -20px rgba(24,24,27,.13);
+}
+.qr-core{
+  background:var(--qr-chalk); border-radius:26px; padding:26px;
+  box-shadow: inset 0 0 0 1px var(--qr-line);
 }
 .qr-head{display:flex; justify-content:space-between; align-items:flex-start;
-  padding-bottom:16px; border-bottom:1px solid var(--qr-line); gap:12px;}
-.qr-head h3{font-size:18px; font-weight:800; margin-top:4px; color:var(--qr-ink);}
-.qr-mono{font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace; font-size:11px;
-  letter-spacing:.08em; text-transform:uppercase;}
-.qr-dim{color:var(--qr-muted);}
+  padding-bottom:18px; border-bottom:1px solid var(--qr-line); gap:12px;}
+.qr-head h3{font-size:19px; font-weight:800; letter-spacing:-0.03em; margin-top:6px; color:var(--qr-ink);}
+.qr-mono{font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace; font-size:10px;
+  font-weight:500; letter-spacing:.2em; text-transform:uppercase;}
+.qr-dim{color:var(--qr-faint);}
 .qr-rows{list-style:none; margin:0; padding:0;}
-.qr-row{padding:14px 0; border-bottom:1px solid var(--qr-chalk);}
+.qr-row{padding:15px 0; border-bottom:1px solid var(--qr-line);}
 .qr-row-top{display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.qr-name{font-size:14px; font-weight:600; color:var(--qr-ink);}
+.qr-name{font-size:14px; font-weight:600; letter-spacing:-0.01em; color:var(--qr-ink);}
 .qr-row-right{display:flex; align-items:center; gap:10px;}
-.qr-label{width:112px; text-align:right; color:var(--qr-muted);}
-.qr-finding{font-size:12.5px; color:var(--qr-muted); margin-top:5px; line-height:1.5;}
+.qr-label{width:118px; text-align:right; color:var(--qr-muted);}
+.qr-finding{font-size:12.5px; color:var(--qr-muted); margin-top:6px; line-height:1.55;}
 
 /* --- the scale primitive --- */
 .qr-scale{display:flex; gap:3px;}
-.qr-cell{display:block; border-radius:2px; background:var(--qr-chalk);}
+.qr-cell{display:block; border-radius:999px; background:var(--qr-sunk);}
 .qr-cell-fill{ transform-origin:left; animation: qr-fill .5s var(--qr-ease) backwards; }
 
 /* --- footer --- */
-.qr-foot{margin-top:16px; padding:16px 18px; background:var(--qr-chalk); border-radius:14px;
+.qr-foot{margin-top:18px; padding:18px 20px; background:#fff; border-radius:20px;
+  box-shadow: inset 0 0 0 1px var(--qr-line);
   display:flex; justify-content:space-between; align-items:center; gap:12px;}
-.qr-overall{display:flex; align-items:center; gap:10px; margin-top:4px;}
-.qr-overall-band{font-size:19px; font-weight:800; color:var(--qr-b4);}
+.qr-overall{display:flex; align-items:center; gap:10px; margin-top:6px;}
+.qr-overall-band{font-size:20px; font-weight:800; letter-spacing:-0.03em; color:var(--qr-b4);}
 .qr-note{font-size:11.5px; color:var(--qr-muted); text-align:right; max-width:170px; line-height:1.5;}
 
-.qr-disclaimer{margin-top:14px; font-size:11px; color:var(--qr-muted); text-align:center;}
+.qr-disclaimer{margin-top:16px; font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--qr-faint); text-align:center;}
 
 /* ======================= THE TWO KEYFRAMES ============================
    This is the entire technique. Everything above is presentation. */

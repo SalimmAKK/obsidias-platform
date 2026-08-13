@@ -35,13 +35,13 @@ function NavItem({ href, icon: Icon, label, badge, isWarningBadge }: {
       <motion.div
         whileHover={{ x: 3 }}
         className={cn(
-          "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors text-[13.5px] font-medium",
+          "flex items-center gap-3 px-3 py-2.5 rounded-[10px] cursor-pointer transition-colors text-[13.5px] font-medium",
           isActive
-            ? "bg-[var(--purple-lt)] text-[var(--purple)]"
-            : "text-[var(--ink2)] hover:bg-[var(--bg)] hover:text-[var(--ink)]"
+            ? "bg-[var(--accent-soft)] text-[var(--accent-deep)] font-semibold"
+            : "text-[var(--ink2)] hover:bg-[var(--core)] hover:text-[var(--ink)]"
         )}
       >
-        <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-[var(--purple)]" : "text-[var(--ink3)]")} />
+        <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-[var(--accent)]" : "text-[var(--ink4)]")} />
         <span className="flex-1 leading-none">{label}</span>
         {badge ? (
           <span className={cn(
@@ -50,12 +50,12 @@ function NavItem({ href, icon: Icon, label, badge, isWarningBadge }: {
               ? "bg-[var(--bg-warning)] text-[var(--text-warning)]"
               : isActive
                 ? "bg-[var(--purple)] text-white"
-                : "bg-[var(--rule)] text-[var(--ink2)]"
+                : "bg-[var(--sunk)] text-[var(--ink2)]"
           )}>
             {badge}
           </span>
         ) : isActive ? (
-          <ChevronRight className="w-3 h-3 text-[var(--purple)] opacity-60" />
+          <ChevronRight className="w-3 h-3 text-[var(--accent)] opacity-60" />
         ) : null}
       </motion.div>
     </Link>
@@ -81,7 +81,7 @@ function SignOutButton() {
       whileHover={{ x: 3 }}
       onClick={handleSignOut}
       disabled={signingOut}
-      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors text-[13.5px] font-medium text-[var(--ink2)] hover:bg-[var(--bg)] hover:text-[var(--ink)] disabled:opacity-50"
+      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] cursor-pointer transition-colors text-[13.5px] font-medium text-[var(--ink2)] hover:bg-[var(--core)] hover:text-[var(--ink)] disabled:opacity-50"
     >
       <LogOut className="w-4 h-4 shrink-0 text-[var(--ink3)]" />
       <span className="flex-1 leading-none text-left">{signingOut ? "Signing out…" : "Sign Out"}</span>
@@ -130,13 +130,13 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="w-[220px] shrink-0 sticky top-0 h-screen flex flex-col bg-white border-r border-[var(--rule)]">
+    <aside className="w-[248px] shrink-0 sticky top-0 h-screen flex flex-col bg-[var(--shell)] shadow-[inset_-1px_0_0_var(--hair)]">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 h-[64px] shrink-0 border-b border-[var(--rule)]">
-        <div className="w-8 h-8 rounded-xl bg-[var(--purple)] flex items-center justify-center shrink-0">
+      <div className="flex items-center gap-2.5 px-5 h-[68px] shrink-0">
+        <div className="w-8 h-8 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shrink-0">
           <Hexagon className="w-4 h-4 text-white" />
         </div>
-        <span className="font-sans font-semibold text-[16px] text-[var(--ink)] tracking-tight">Obsidias</span>
+        <span className="font-sans font-bold text-[16px] text-[var(--ink)] tracking-[-0.02em]">Obsidias</span>
       </div>
 
       {/* Search */}
@@ -148,20 +148,20 @@ export function Sidebar() {
             placeholder="Search…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full h-9 pl-8 pr-3 bg-[var(--bg)] border border-[var(--rule)] rounded-lg text-[13px] text-[var(--ink)] placeholder:text-[var(--ink3)] focus:outline-none focus:border-[var(--purple)] focus:ring-2 focus:ring-[var(--purple-lt)] transition-all"
+            className="w-full h-9 pl-8 pr-3 bg-[var(--core)] rounded-[10px] text-[13px] text-[var(--ink)] placeholder:text-[var(--ink4)] shadow-[inset_0_0_0_1px_var(--hair)] focus:outline-none focus:shadow-[inset_0_0_0_1px_var(--accent),0_0_0_3px_var(--accent-soft)] transition-shadow"
           />
-          <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-[var(--ink3)] bg-[var(--rule)] px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
+          <kbd className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] text-[var(--ink4)] bg-[var(--sunk)] px-1.5 py-0.5 rounded-md font-mono">⌘K</kbd>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 overflow-y-auto flex flex-col gap-0.5">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--ink3)] px-3 py-2">Main Menu</p>
+        <p className="meta-label px-3 py-2">Main Menu</p>
         {mainNavItems.map(item => <NavItem key={item.href} {...item} />)}
 
-        <div className="my-3 h-px bg-[var(--rule)] mx-2" />
+        <div className="my-3 h-px bg-[var(--hair)] mx-2" />
 
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--ink3)] px-3 py-2">Settings</p>
+        <p className="meta-label px-3 py-2">Settings</p>
         {SETTINGS_NAV.map(item => <NavItem key={item.href} {...item} />)}
         <SignOutButton />
       </nav>
@@ -169,19 +169,19 @@ export function Sidebar() {
       {/* Bottom promo */}
       <div className="p-3 shrink-0">
         <div
-          className="rounded-2xl p-4 text-white relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #5B4FF5 0%, #8A80FF 100%)" }}
+          className="rounded-[20px] p-4 text-white relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #C1662E 0%, #E8A96C 100%)" }}
         >
           <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
           <div className="absolute -bottom-3 -left-3 w-16 h-16 rounded-full bg-white/10" />
-          <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center mb-3 relative">
+          <div className="w-8 h-8 rounded-[10px] bg-white/20 flex items-center justify-center mb-3 relative">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <p className="font-sans font-semibold text-[13px] mb-1 relative">Stay on top of review</p>
           <p className="font-sans text-[11px] text-white/70 mb-3 leading-relaxed relative">
             Leads below the AI confidence threshold are waiting on you
           </p>
-          <Link href="/review" className="w-full block text-center bg-white text-[var(--purple)] rounded-xl py-2 text-[12px] font-semibold hover:bg-white/90 transition-colors relative">
+          <Link href="/review" className="w-full block text-center bg-white text-[var(--accent-deep)] rounded-full py-2 text-[12px] font-semibold hover:bg-white/90 transition-colors relative">
             Go to Review Queue
           </Link>
         </div>

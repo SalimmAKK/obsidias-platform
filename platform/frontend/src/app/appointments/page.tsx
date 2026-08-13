@@ -10,10 +10,19 @@ import { Button } from "@/components/Button";
 import { useToast } from "@/components/ToastProvider";
 import { ChannelIcon } from "@/components/LeadBadges";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 16 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 interface Appointment {
@@ -177,7 +186,7 @@ export default function AppointmentsPage() {
       <ScheduleModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onScheduled={fetchAppointments} />
 
       <motion.div {...fadeUp(0)} className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div className="inline-flex p-1 bg-white border border-[var(--rule)] rounded-xl shadow-sm">
+        <div className="inline-flex p-1 bg-white shadow-[inset_0_0_0_1px_var(--hair)] rounded-xl shadow-sm">
           {STATUS_TABS.map(t => (
             <button
               key={t.value}
@@ -237,13 +246,13 @@ export default function AppointmentsPage() {
                     </span>
                     {a.status === "scheduled" && (
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <button title="Mark completed" onClick={() => updateStatus(a.id, "completed")} className="w-8 h-8 rounded-lg border border-[var(--rule)] flex items-center justify-center text-[var(--green)] hover:bg-[var(--green-lt)] transition-colors">
+                        <button title="Mark completed" onClick={() => updateStatus(a.id, "completed")} className="w-8 h-8 rounded-lg shadow-[inset_0_0_0_1px_var(--hair)] flex items-center justify-center text-[var(--green)] hover:bg-[var(--green-lt)] transition-colors">
                           <Check className="w-4 h-4" />
                         </button>
-                        <button title="No show" onClick={() => updateStatus(a.id, "no_show")} className="w-8 h-8 rounded-lg border border-[var(--rule)] flex items-center justify-center text-[var(--red)] hover:bg-[var(--red-lt)] transition-colors">
+                        <button title="No show" onClick={() => updateStatus(a.id, "no_show")} className="w-8 h-8 rounded-lg shadow-[inset_0_0_0_1px_var(--hair)] flex items-center justify-center text-[var(--red)] hover:bg-[var(--red-lt)] transition-colors">
                           <UserX className="w-4 h-4" />
                         </button>
-                        <button title="Cancel" onClick={() => updateStatus(a.id, "cancelled")} className="w-8 h-8 rounded-lg border border-[var(--rule)] flex items-center justify-center text-[var(--ink3)] hover:bg-[var(--rule)] transition-colors">
+                        <button title="Cancel" onClick={() => updateStatus(a.id, "cancelled")} className="w-8 h-8 rounded-lg shadow-[inset_0_0_0_1px_var(--hair)] flex items-center justify-center text-[var(--ink3)] hover:bg-[var(--rule)] transition-colors">
                           <X className="w-4 h-4" />
                         </button>
                       </div>

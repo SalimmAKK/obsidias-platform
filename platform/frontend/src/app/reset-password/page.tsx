@@ -86,7 +86,7 @@ function ResetPasswordForm() {
   return (
     <div className="relative min-h-screen flex items-center justify-center p-6 bg-[var(--bg)]">
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
+        initial={false}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
         className="relative z-10 w-full max-w-[420px]"

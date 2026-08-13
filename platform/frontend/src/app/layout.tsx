@@ -1,32 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ToastProvider";
 
-// Inter is the shared typeface across the dashboard (see src/styles/
-// tokens.css). It previously wasn't loaded anywhere in the app, so
-// Landing.css's `font-family: 'Inter'` was silently falling back to the
-// system font the whole time.
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter"
-});
-
-// Plus Jakarta Sans is the marketing site's typeface (landing, features,
-// how-it-works), per the warm/organic design pass — scoped to those pages
-// via --font-jakarta rather than replacing Inter everywhere, so the
-// dashboard is unaffected until/unless that gets its own redesign pass.
-const plusJakartaSans = Plus_Jakarta_Sans({
+// Geist for display and body, Geist Mono for meta labels. Inter is
+// deliberately not loaded — it's banned by the design system this is built
+// to, and leaving it out means nothing can silently fall back to it.
+const geist = Geist({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-jakarta",
+  variable: "--font-geist",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-jetbrains-mono"
+  weight: ["400", "500"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -37,14 +26,26 @@ export const metadata: Metadata = {
   }
 };
 
+// Runs before first paint, so JS-gated motion primitives (.m-reveal,
+// .m-lines) only ever hide content on a browser that can also un-hide it.
+// Without JS this class is never added, the gated rules never match, and
+// everything renders in its final readable state — animation stays strictly
+// progressive enhancement.
+const MOTION_GATE = `try{document.documentElement.classList.add('m-js')}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${plusJakartaSans.variable}`}>
+    // suppressHydrationWarning because the inline script below deliberately
+    // mutates this element's className before React hydrates — that's the
+    // whole point of it running pre-paint, and it's the one documented case
+    // where a server/client attribute mismatch is intended.
+    <html lang="en" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: MOTION_GATE }} />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
       </head>
       <body className="antialiased min-h-screen flex flex-col">

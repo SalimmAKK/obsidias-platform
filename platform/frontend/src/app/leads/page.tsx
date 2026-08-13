@@ -8,10 +8,19 @@ import { AppLayout } from "@/components/AppLayout";
 import { GlassPanel } from "@/components/GlassPanel";
 import { LeadStatusBadge, BucketBadge, ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 16 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as any, delay },
+/* Entrance animation intentionally disabled on dashboard surfaces.
+   `initial` values are server-rendered as inline styles, so an
+   `opacity: 0` start ships invisible content in the raw HTML — if the JS
+   bundle fails or is slow, the page is blank. `initial={false}` renders
+   straight to the final state instead.
+
+   This is also the right call on merit: these are screens an agent opens
+   dozens of times a day, and a fade-in that reads as considered on first
+   visit reads as latency on the fortieth. Crafted motion belongs on the
+   marketing site; the tool should just be there. */
+const fadeUp = (_delay = 0) => ({
+  initial: false as const,
+  animate: { opacity: 1, y: 0 },
 });
 
 interface ApiLead {
@@ -146,7 +155,7 @@ export default function LeadsPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px]">
               <thead>
-                <tr className="border-b border-[var(--rule)]">
+                <tr className="border-b border-[var(--hair)]">
                   {["PROFILE", "CONTACT", "SOURCE", "CHANNEL", "DATE", "BUCKET", "STATUS", "SCORE"].map((h, i) => (
                     <th key={h} className={`py-3.5 px-5 font-sans font-semibold text-[10px] uppercase tracking-wider text-[var(--ink3)] ${i === 7 ? "text-right" : "text-left"}`}>
                       {h}
@@ -174,7 +183,7 @@ export default function LeadsPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.05 + i * 0.03, duration: 0.3, ease: "easeOut" }}
                     whileHover={{ backgroundColor: "var(--bg)" }}
-                    className="border-b border-[var(--rule)] last:border-0 cursor-pointer transition-colors"
+                    className="border-b border-[var(--hair)] last:border-0 cursor-pointer transition-colors"
                     onClick={() => router.push(`/leads/${lead.id}`)}
                   >
                     <td className="py-4 px-5">
@@ -204,7 +213,7 @@ export default function LeadsPage() {
           </div>
 
           {/* Pagination */}
-          <div className="border-t border-[var(--rule)] px-5 py-3.5 flex items-center justify-between">
+          <div className="border-t border-[var(--hair)] px-5 py-3.5 flex items-center justify-between">
             <motion.button
               whileHover={{ x: -2 }} whileTap={{ scale: 0.96 }}
               onClick={() => setPage(p => Math.max(1, p - 1))}
