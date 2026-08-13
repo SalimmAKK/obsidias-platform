@@ -429,13 +429,10 @@ const PLANS = [
     ctaTo: '/login',
     featured: false,
     features: [
-      { text: '500 leads per month', on: true },
-      { text: 'WhatsApp and email automation', on: true },
-      { text: 'AI qualification and scoring', on: true },
-      { text: 'CRM sync and appointment booking', on: true },
-      { text: 'Instagram DM automation', on: false },
-      { text: 'Custom brand voice', on: false },
-      { text: 'Cold-lead reactivation', on: false },
+      '500 leads per month',
+      'WhatsApp and email automation',
+      'AI qualification and scoring',
+      'CRM sync and appointment booking',
     ],
   },
   {
@@ -447,13 +444,10 @@ const PLANS = [
     ctaTo: '/login',
     featured: true,
     features: [
-      { text: '2,500 leads per month', on: true },
-      { text: 'WhatsApp, Instagram DM, and email', on: true },
-      { text: 'AI qualification and scoring', on: true },
-      { text: 'CRM sync and appointment booking', on: true },
-      { text: 'Custom brand voice and AI persona', on: true },
-      { text: 'Cold-lead reactivation', on: true },
-      { text: 'White-label dashboard', on: false },
+      '2,500 leads per month',
+      'WhatsApp, Instagram DM, and email',
+      'Custom brand voice and AI persona',
+      'Cold-lead reactivation',
     ],
   },
   {
@@ -465,13 +459,10 @@ const PLANS = [
     ctaTo: '/contact',
     featured: false,
     features: [
-      { text: 'Unlimited leads', on: true },
-      { text: 'All channels', on: true },
-      { text: 'AI qualification and scoring', on: true },
-      { text: 'CRM sync and appointment booking', on: true },
-      { text: 'Custom brand voice and AI persona', on: true },
-      { text: 'Cold-lead reactivation', on: true },
-      { text: 'White-label dashboard, per branch', on: true },
+      'Unlimited leads',
+      'All channels',
+      'White-label dashboard, per branch',
+      'Custom brand voice and AI persona',
     ],
   },
 ];
@@ -508,8 +499,8 @@ function Pricing() {
                 <Link href={plan.ctaTo} className="l-plan-btn">{plan.cta}</Link>
               )}
               <ul className="l-feat-list">
-                {plan.features.map((f) => (
-                  <li key={f.text} className={f.on ? '' : 'off'}>{f.text}</li>
+                {plan.features.map((f, fi) => (
+                  <li key={`${plan.name}-${fi}`}>{f}</li>
                 ))}
               </ul>
             </div>
@@ -526,7 +517,8 @@ function FinalCta() {
     <section className="l-final">
       <div className="l-container">
         <h2 className="reveal">
-          The next lead who messages you will message<br className="l-final-break" /> someone else too, if you&rsquo;re slow.
+          <span style={{ display: 'block' }}>The next lead who messages you</span>
+          <span style={{ display: 'block' }}>will message someone else too, if you&rsquo;re slow.</span>
         </h2>
         <p className="reveal d1">
           Every hour without a reply is an hour a competing agency has to reach them
