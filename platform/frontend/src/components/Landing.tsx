@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { MarketingNav, MarketingFooter } from './marketing/MarketingChrome';
+import { QualificationReportCard } from './marketing/QualificationReportCard';
 import './Landing.css';
 
 // ── SCROLL REVEAL ──────────────────────────────────────────────────────────
@@ -454,74 +455,31 @@ function Channels() {
   );
 }
 
-// ── LIVE ARTIFACTS ───────────────────────────────────────────────────────────
-// Pure CSS keyframe loops, not React state — same reasoning as the .l-enter
-// hero fix: nothing here depends on JS hydrating or an observer firing to
-// become visible, so there's no blank-until-reload risk. They loop on their
-// own once painted.
-function LiveArtifacts() {
+// ── QUALIFICATION ARTIFACT ───────────────────────────────────────────────
+// The card itself (QualificationReportCard) times its fill/fade animations
+// off mount via CSS animation-delay, not scroll position — that's the
+// point of the technique (correct with JS off, no flash-of-wrong-state).
+// This wrapper's heading still uses the page's normal scroll-reveal, which
+// is a different, compatible concern: whether the section fades in as you
+// scroll to it at all. If a visitor is already past this section's fixed
+// delays by the time it scrolls into view, the card just renders already
+// filled — not a bug, the correct end state was there in the markup from
+// the start.
+function QualificationArtifact() {
   return (
-    <section className="l-live">
+    <section className="l-qr">
       <div className="l-wide">
-        <div className="l-live-head reveal">
-          <p className="l-eyebrow">Behind every conversation</p>
-          <h2 className="l-h2">What happens after the lead replies</h2>
+        <div className="l-qr-head reveal">
+          <p className="l-eyebrow">What lands on your desk</p>
+          <h2 className="l-h2">Every lead gets a report like this</h2>
           <p className="l-body">
-            Illustrative animations of the actual qualification and booking
-            flow, not a live customer record.
+            Not a dashboard tile to go digging for. A qualification result
+            an agent can read in five seconds and act on.
           </p>
         </div>
-        <div className="l-live-grid reveal d2">
-          <div className="l-live-card">
-            <p className="l-live-card-label">Qualification</p>
-            <div className="l-qm-rows">
-              <div className="l-qm-row">
-                <span>Budget</span>
-                <div className="l-qm-bar"><div className="l-qm-fill b1" /></div>
-              </div>
-              <div className="l-qm-row">
-                <span>Authority</span>
-                <div className="l-qm-bar"><div className="l-qm-fill b2" /></div>
-              </div>
-              <div className="l-qm-row">
-                <span>Need</span>
-                <div className="l-qm-bar"><div className="l-qm-fill b3" /></div>
-              </div>
-              <div className="l-qm-row">
-                <span>Timeline</span>
-                <div className="l-qm-bar"><div className="l-qm-fill b4" /></div>
-              </div>
-            </div>
-            <div className="l-qm-ring-wrap">
-              <svg className="l-qm-ring" viewBox="0 0 80 80" aria-hidden="true">
-                <circle className="l-qm-ring-bg" cx="40" cy="40" r="34" />
-                <circle className="l-qm-ring-fg" cx="40" cy="40" r="34" />
-              </svg>
-              <div className="l-qm-ring-label">
-                <strong>91%</strong>
-                <span>confidence</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="l-live-card">
-            <p className="l-live-card-label">Booking</p>
-            <div className="l-bk-cal">
-              <div className="l-bk-cal-head">Thursday</div>
-              <div className="l-bk-slot"><span className="l-bk-time">9:00 AM</span></div>
-              <div className="l-bk-slot"><span className="l-bk-time">11:00 AM</span></div>
-              <div className="l-bk-slot filled">
-                <i className="ti ti-check l-bk-check" aria-hidden="true" />
-                <span className="l-bk-time">4:00 PM</span>
-                <span className="l-bk-title">Property viewing, Ahmed Al-Khalidi</span>
-              </div>
-              <div className="l-bk-slot"><span className="l-bk-time">6:00 PM</span></div>
-            </div>
-          </div>
+        <div className="l-qr-card-wrap reveal d2">
+          <QualificationReportCard />
         </div>
-        <p className="l-live-note reveal">
-          Illustrative animation of the actual product flow, not a live customer record.
-        </p>
       </div>
     </section>
   );
@@ -651,10 +609,10 @@ export default function Landing() {
       <main>
         <Hero />
         <LiveDemo />
+        <QualificationArtifact />
         <Trust />
         <HowItWorks />
         <Channels />
-        <LiveArtifacts />
         <Pricing />
         <FinalCta />
       </main>

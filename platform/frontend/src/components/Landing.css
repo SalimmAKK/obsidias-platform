@@ -875,223 +875,18 @@ body {
   line-height: 1.6;
 }
 
-/* ── LIVE ARTIFACTS ───────────────────────────────────────────────────────── */
-.l-live {
+/* ── QUALIFICATION ARTIFACT ───────────────────────────────────────────────── */
+/* Just the section wrapper — the card itself (QualificationReportCard) is
+   fully self-contained with its own <style> block, on purpose, so it stays
+   portable to other pages. */
+.l-qr {
   background: #fff;
   padding: 88px 2.5rem;
 }
 
-.l-live-head { max-width: 560px; margin-bottom: 2.5rem; }
+.l-qr-head { max-width: 560px; margin: 0 auto 2.75rem; text-align: center; }
 
-.l-live-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.125rem;
-}
-
-.l-live-card {
-  background: var(--card2);
-  border-radius: 24px;
-  padding: 1.75rem;
-}
-
-.l-live-card-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink3);
-  margin-bottom: 1.25rem;
-}
-
-/* Qualification meter */
-.l-qm-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  margin-bottom: 1.5rem;
-}
-
-.l-qm-row {
-  display: grid;
-  grid-template-columns: 66px 1fr;
-  align-items: center;
-  gap: 10px;
-}
-
-.l-qm-row span {
-  font-size: 12px;
-  color: var(--ink3);
-  font-weight: 500;
-}
-
-.l-qm-bar {
-  height: 7px;
-  background: var(--rule);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.l-qm-fill {
-  height: 100%;
-  background: var(--purple);
-  border-radius: 999px;
-  width: 0%;
-  animation: qmFill 6s ease-in-out infinite;
-}
-.l-qm-fill.b1 { --target: 78%; animation-delay: 0.1s; }
-.l-qm-fill.b2 { --target: 100%; animation-delay: 0.3s; }
-.l-qm-fill.b3 { --target: 88%; animation-delay: 0.5s; }
-.l-qm-fill.b4 { --target: 95%; animation-delay: 0.7s; }
-
-@keyframes qmFill {
-  0%, 8% { width: 0%; }
-  45%, 85% { width: var(--target); }
-  100% { width: 0%; }
-}
-
-.l-qm-ring-wrap {
-  position: relative;
-  width: 84px;
-  height: 84px;
-  margin: 0 auto;
-}
-
-.l-qm-ring {
-  width: 84px;
-  height: 84px;
-  transform: rotate(-90deg);
-}
-
-.l-qm-ring-bg {
-  fill: none;
-  stroke: var(--rule);
-  stroke-width: 7;
-}
-
-.l-qm-ring-fg {
-  fill: none;
-  stroke: var(--purple);
-  stroke-width: 7;
-  stroke-linecap: round;
-  stroke-dasharray: 213.6;
-  stroke-dashoffset: 213.6;
-  animation: qmRing 6s ease-in-out infinite;
-}
-
-@keyframes qmRing {
-  0%, 8% { stroke-dashoffset: 213.6; }
-  45%, 85% { stroke-dashoffset: 19.2; }
-  100% { stroke-dashoffset: 213.6; }
-}
-
-.l-qm-ring-label {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  animation: qmLabelIn 6s ease-in-out infinite;
-}
-
-@keyframes qmLabelIn {
-  0%, 40% { opacity: 0; }
-  50%, 85% { opacity: 1; }
-  95%, 100% { opacity: 0; }
-}
-
-.l-qm-ring-label strong {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--ink);
-}
-
-.l-qm-ring-label span {
-  font-size: 9.5px;
-  color: var(--ink4);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
-}
-
-/* Booking ticker */
-.l-bk-cal {
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.l-bk-cal-head {
-  padding: 11px 15px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--ink);
-  border-bottom: 0.5px solid var(--rule);
-}
-
-.l-bk-slot {
-  padding: 12px 15px;
-  border-bottom: 0.5px solid var(--rule);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.l-bk-slot:last-child { border-bottom: none; }
-
-.l-bk-time {
-  font-size: 12px;
-  color: var(--ink4);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.l-bk-slot.filled {
-  background: var(--purple-lt);
-  border-radius: 12px;
-  animation: bkSlotIn 6s ease-in-out infinite;
-}
-.l-bk-slot.filled .l-bk-time { color: var(--purple-hover); }
-
-.l-bk-title {
-  font-size: 12px;
-  color: var(--ink);
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.l-bk-check {
-  font-size: 12px;
-  color: var(--purple);
-  flex-shrink: 0;
-}
-
-@keyframes bkSlotIn {
-  0%, 10% { opacity: 0; transform: translateY(5px) scale(0.98); }
-  25%, 80% { opacity: 1; transform: none; }
-  95%, 100% { opacity: 0; transform: translateY(5px) scale(0.98); }
-}
-
-.l-live-note {
-  margin-top: 1.25rem;
-  font-size: 12px;
-  color: var(--ink4);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .l-qm-fill, .l-qm-ring-fg, .l-qm-ring-label, .l-bk-slot.filled {
-    animation: none;
-  }
-  .l-qm-fill.b1 { width: 78%; }
-  .l-qm-fill.b2 { width: 100%; }
-  .l-qm-fill.b3 { width: 88%; }
-  .l-qm-fill.b4 { width: 95%; }
-  .l-qm-ring-fg { stroke-dashoffset: 19.2; }
-  .l-qm-ring-label { opacity: 1; }
-  .l-bk-slot.filled { opacity: 1; transform: none; }
-}
+.l-qr-card-wrap { display: flex; justify-content: center; }
 
 /* ── PRICING ──────────────────────────────────────────────────────────────── */
 .l-pricing {
@@ -1341,8 +1136,6 @@ body {
 
   .l-ch-grid { grid-template-columns: 1fr; }
 
-  .l-live-grid { grid-template-columns: 1fr; }
-
   .l-plan-grid { grid-template-columns: 1fr; }
 }
 
@@ -1355,7 +1148,7 @@ body {
   .l-trust,
   .l-how,
   .l-channels,
-  .l-live,
+  .l-qr,
   .l-pricing {
     padding: 64px 1.5rem;
   }
@@ -1387,7 +1180,7 @@ body {
   .l-trust,
   .l-how,
   .l-channels,
-  .l-live,
+  .l-qr,
   .l-pricing {
     padding: 56px 1.25rem;
   }
