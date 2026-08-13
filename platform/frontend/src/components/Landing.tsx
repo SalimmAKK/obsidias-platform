@@ -247,31 +247,109 @@ function Trust() {
   );
 }
 
-// ── HOW IT WORKS ──────────────────────────────────────────────────────────
-const STEPS = [
+// ── HOW IT WORKS (pinned, scroll-driven) ────────────────────────────────
+// The 4 keyword tabs stay pinned in view while the user scrolls through
+// this section; which tab is "active" advances with scroll position,
+// expanding into real detail + a screenshot slot on each step. Screenshot
+// panels are placeholders until the dashboard's own redesign pass lands —
+// swapping a real image in later is a one-line change per step, no layout
+// work required.
+interface PinnedStep {
+  key: string;
+  tab: string;
+  title: string;
+  body: string;
+  bullets: string[];
+}
+
+const PINNED_STEPS: PinnedStep[] = [
   {
-    n: '1',
-    title: 'A lead reaches out',
-    body: 'WhatsApp, an Instagram DM, or a form on your site. It lands in one inbox instead of scattered across three apps and a phone nobody checks after 6pm.',
+    key: 'capture',
+    tab: 'Capture',
+    title: 'Every channel, one inbox',
+    body: 'WhatsApp, Instagram DM, and email all land in the same place the moment a lead reaches out, instead of three apps and a phone nobody checks after 6pm.',
+    bullets: [
+      'WhatsApp, Instagram, and email in one thread',
+      'Full conversation history kept per lead',
+      'Nothing missed on an app someone forgot to open',
+    ],
   },
   {
-    n: '2',
-    title: 'It gets qualified before anyone spends time on it',
-    body: "The system checks who they are and whether what they're asking for is something you can actually sell them. Leads that clearly aren't a fit get archived with a reason attached, not left in a pile for someone to sort through later.",
+    key: 'qualify',
+    tab: 'Qualify',
+    title: 'Scored before anyone opens the thread',
+    body: 'Every lead is checked against Budget, Authority, Need, and Timeline the moment they message in, on what they actually said, not how promising it sounds.',
+    bullets: [
+      'BANT scoring runs automatically on every lead',
+      'Confidence reflects real signal, not guesswork',
+      "Leads that aren't a fit get archived with a reason",
+    ],
   },
   {
-    n: '3',
-    title: 'A conversation starts, on their terms',
-    body: 'The reply goes out on whichever channel they used, in the tone your agency actually uses with clients. Follow-up questions are handled contextually, not with a script that repeats itself.',
+    key: 'converse',
+    tab: 'Converse',
+    title: 'Replies that keep the conversation moving',
+    body: 'The AI responds in under 90 seconds and keeps answering follow-up questions in context, until a person needs to take it from there.',
+    bullets: [
+      'Replies within 90 seconds, on the same channel',
+      'Handed to a named agent instantly, one click',
+      'Never invents a price or availability it lacks',
+    ],
   },
   {
-    n: '4',
-    title: 'Your agent picks up a warm lead',
-    body: 'By the time a person on your team is involved, the lead is qualified, the full conversation is there to read, and often a viewing time is already offered or confirmed.',
+    key: 'book',
+    tab: 'Book & sync',
+    title: 'Viewings booked, leads synced',
+    body: "A lead who's ready gets a real calendar slot, and a qualified one lands straight in your CRM, no one retyping a name and number.",
+    bullets: [
+      'Booked directly onto your team’s real calendar',
+      'Pushed to your CRM automatically once qualified',
+      'Cold leads flagged and resurfaced after a week quiet',
+    ],
   },
 ];
 
+function usePinnedScroll(stepCount: number) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    let ticking = false;
+
+    function computeActiveIndex() {
+      ticking = false;
+      const el = wrapperRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      if (total <= 0) return;
+      const progress = Math.min(1, Math.max(0, -rect.top / total));
+      const index = Math.min(stepCount - 1, Math.floor(progress * stepCount));
+      setActiveIndex(index);
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(computeActiveIndex);
+    }
+
+    computeActiveIndex();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [stepCount]);
+
+  return { wrapperRef, activeIndex, setActiveIndex };
+}
+
 function HowItWorks() {
+  const { wrapperRef, activeIndex, setActiveIndex } = usePinnedScroll(PINNED_STEPS.length);
+  const step = PINNED_STEPS[activeIndex];
+
   return (
     <section className="l-how" id="how">
       <div className="l-wide">
@@ -279,16 +357,47 @@ function HowItWorks() {
           <p className="l-eyebrow">How it works</p>
           <h2 className="l-h2">What you see, not what runs underneath</h2>
         </div>
-        <div className="l-how-grid">
-          {STEPS.map((s, i) => (
-            <div className={`l-how-step reveal d${i + 1}`} key={s.n}>
-              <div className="l-how-num">{s.n}</div>
-              <h3>{s.title}</h3>
-              <p>{s.body}</p>
+      </div>
+
+      <div className="l-how-pin-wrapper" ref={wrapperRef}>
+        <div className="l-how-pin-sticky">
+          <div className="l-wide">
+            <div className="l-how-tabs">
+              {PINNED_STEPS.map((s, i) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  className={`l-how-tab${i === activeIndex ? ' active' : ''}`}
+                  onClick={() => setActiveIndex(i)}
+                >
+                  {s.tab}
+                </button>
+              ))}
             </div>
-          ))}
+
+            <div className="l-how-pin-grid">
+              <div className="l-how-pin-text" key={`text-${step.key}`}>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+                <ul className="l-how-pin-bullets">
+                  {step.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="l-how-pin-shot" key={`shot-${step.key}`}>
+                <div className="l-how-pin-shot-placeholder">
+                  <i className="ti ti-photo" aria-hidden="true" />
+                  <span>Dashboard preview — {step.tab.toLowerCase()}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <Link href="/how-it-works" className="l-how-more reveal d4">
+      </div>
+
+      <div className="l-wide">
+        <Link href="/how-it-works" className="l-how-more">
           See the full walkthrough &rarr;
         </Link>
       </div>
