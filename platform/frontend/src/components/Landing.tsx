@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { MarketingNav, MarketingFooter } from './marketing/MarketingChrome';
 import './Landing.css';
 
 // ── SCROLL REVEAL ──────────────────────────────────────────────────────────
@@ -17,22 +18,6 @@ function useReveal() {
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
-}
-
-// ── NAV ───────────────────────────────────────────────────────────────────
-function Nav() {
-  return (
-    <nav className="l-nav">
-      <Link href="/" className="l-nav-logo">OBSIDIAS</Link>
-      <div className="l-nav-links">
-        <a href="#demo">See it work</a>
-        <a href="#how">How it works</a>
-        <a href="#channels">Channels</a>
-        <a href="#pricing">Pricing</a>
-        <Link href="/login" className="l-nav-cta">Request access</Link>
-      </div>
-    </nav>
-  );
 }
 
 // ── HERO ──────────────────────────────────────────────────────────────────
@@ -303,6 +288,9 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+        <Link href="/how-it-works" className="l-how-more reveal d4">
+          See the full walkthrough &rarr;
+        </Link>
       </div>
     </section>
   );
@@ -479,31 +467,13 @@ function FinalCta() {
   );
 }
 
-// ── FOOTER ────────────────────────────────────────────────────────────────
-function Footer() {
-  return (
-    <footer className="l-footer">
-      <Link href="/" className="l-footer-logo">OBSIDIAS</Link>
-      <div className="l-footer-links">
-        <a href="#demo">See it work</a>
-        <a href="#how">How it works</a>
-        <a href="#channels">Channels</a>
-        <a href="#pricing">Pricing</a>
-        <Link href="/privacy" title="Non-functional in prototype">Privacy</Link>
-        <Link href="/terms" title="Non-functional in prototype">Terms</Link>
-      </div>
-      <small>2026 Obsidias Services</small>
-    </footer>
-  );
-}
-
 // ── PAGE ──────────────────────────────────────────────────────────────────
 export default function Landing() {
   useReveal();
 
   return (
     <>
-      <Nav />
+      <MarketingNav />
       <main>
         <Hero />
         <LiveDemo />
@@ -513,7 +483,7 @@ export default function Landing() {
         <Pricing />
         <FinalCta />
       </main>
-      <Footer />
+      <MarketingFooter />
     </>
   );
 }

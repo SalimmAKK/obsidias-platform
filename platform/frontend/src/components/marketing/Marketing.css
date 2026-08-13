@@ -1,0 +1,260 @@
+/* Shared base styles for every marketing page: tokens, reset, scroll/entrance
+   animations, nav, footer, buttons, and shared type/layout helpers. Copied
+   (not moved) from Landing.css so the existing, already-approved landing
+   page stays completely untouched — this file is what /features and
+   /how-it-works import instead. Keep both in sync if the nav/footer/button
+   styles change. */
+@import '../../styles/tokens.css';
+
+:root {
+  --r: var(--radius-md);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── SCROLL ANIMATIONS ───────────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.58s ease, transform 0.58s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.16s; }
+.d3 { transition-delay: 0.24s; }
+.d4 { transition-delay: 0.32s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── ABOVE-THE-FOLD ENTRANCE ─────────────────────────────────────────────── */
+/* Pure CSS @keyframes so hero content is never gated on JS hydration or an
+   IntersectionObserver firing. See the same note in Landing.css. */
+@keyframes lEnter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.l-enter {
+  animation: lEnter 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+.l-e1 { animation-delay: 0.08s; }
+.l-e2 { animation-delay: 0.16s; }
+.l-e3 { animation-delay: 0.24s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .l-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── NAV ──────────────────────────────────────────────────────────────────── */
+.l-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: 58px;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(249, 248, 246, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 0.5px solid var(--rule);
+}
+
+.l-nav-logo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.l-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.l-nav-links a {
+  font-size: 13.5px;
+  color: var(--ink3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.l-nav-links a:hover { color: var(--ink); }
+
+.l-nav-cta {
+  padding: 7px 18px;
+  background: var(--ink);
+  color: #fff !important;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.l-nav-cta:hover { background: var(--ink2); }
+
+/* ── LAYOUT HELPERS ───────────────────────────────────────────────────────── */
+.l-container { max-width: 900px;  margin: 0 auto; padding: 0 2.5rem; }
+.l-wide      { max-width: 1120px; margin: 0 auto; padding: 0 2.5rem; }
+
+.l-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 0.875rem;
+}
+.l-eyebrow.on-dark { color: var(--purple-dim); }
+
+/* ── SHARED TYPE ──────────────────────────────────────────────────────────── */
+.l-h2 {
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+  max-width: 640px;
+}
+.l-h2.on-dark { color: #fff; }
+
+.l-body {
+  font-size: 0.975rem;
+  color: var(--ink2);
+  line-height: 1.75;
+  max-width: 560px;
+}
+.l-body.on-dark { color: rgba(255, 255, 255, 0.62); }
+
+/* ── BUTTONS ──────────────────────────────────────────────────────────────── */
+.btn-dark {
+  padding: 13px 28px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.15s, transform 0.12s;
+}
+.btn-dark:hover {
+  background: var(--ink2);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  padding: 13px 24px;
+  background: transparent;
+  color: var(--ink);
+  border: 0.5px solid var(--rule);
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-outline:hover {
+  border-color: var(--ink3);
+  background: var(--card2);
+}
+
+.btn-white {
+  padding: 13px 32px;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.15s;
+}
+.btn-white:hover { background: #EDEBE8; }
+
+/* ── FOOTER ───────────────────────────────────────────────────────────────── */
+.l-footer {
+  padding: 44px 2.5rem;
+  border-top: 0.5px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--bg);
+}
+
+.l-footer-logo {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.l-footer-links {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.l-footer-links a {
+  font-size: 12.5px;
+  color: var(--ink3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.l-footer-links a:hover { color: var(--ink); }
+
+.l-footer small {
+  font-size: 11.5px;
+  color: var(--ink4);
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .l-nav-links a:not(.l-nav-cta) { display: none; }
+}
+
+@media (max-width: 860px) {
+  .l-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+  .l-footer-links { justify-content: center; }
+}
+
+@media (max-width: 400px) {
+  .l-nav { padding: 0 1.25rem; }
+}

@@ -627,6 +627,19 @@ body {
   line-height: 1.65;
 }
 
+.l-how-more {
+  display: inline-block;
+  margin-top: 2.5rem;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink4);
+  padding-bottom: 2px;
+  transition: border-color 0.15s;
+}
+.l-how-more:hover { border-color: var(--ink); }
+
 /* ── CHANNELS ─────────────────────────────────────────────────────────────── */
 .l-channels {
   background: var(--bg);
