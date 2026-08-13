@@ -23,58 +23,90 @@ function useReveal() {
 interface Feature {
   icon: string;
   title: string;
-  body: string;
-  detail: string;
+  intro: string;
+  points: string[];
 }
 
 const FEATURES: Feature[] = [
   {
     icon: 'ti-messages',
     title: 'Every channel in one inbox',
-    body: 'WhatsApp, Instagram DMs, and email all land in the same place instead of three apps and a phone nobody checks after 6pm. Nothing gets missed because it arrived on the channel someone forgot to open.',
-    detail: 'Each conversation keeps the full history in one thread, whichever channel the lead used to reach out.',
+    intro: 'WhatsApp, Instagram, and email, captured in one place.',
+    points: [
+      'WhatsApp, Instagram DM, and email captured in one inbox',
+      'Full conversation history kept in a single thread per lead',
+      'Nothing missed because it arrived on an unopened app',
+    ],
   },
   {
     icon: 'ti-list-check',
     title: 'AI qualification against BANT',
-    body: "Every lead is assessed against Budget, Authority, Need and Timeline before an agent spends a minute on it. Leads that clearly aren't a fit get a reason attached instead of sitting in a pile for someone to sort through later.",
-    detail: 'Confidence is scored on what was actually said, not how enthusiastic the message sounds.',
+    intro: 'Every lead scored before an agent spends time on it.',
+    points: [
+      'Scored against Budget, Authority, Need, and Timeline',
+      'Confidence based on what was actually said',
+      'Unfit leads archived with a reason attached',
+    ],
   },
   {
     icon: 'ti-message-chatbot',
     title: 'Conversations that keep moving',
-    body: 'The AI replies within 90 seconds, on whichever channel the lead is on, in the tone your agency actually uses. Follow-up questions are answered in context, not with a script that repeats itself.',
-    detail: 'It sticks to what it actually knows. It will not invent a price or availability it was never told.',
+    intro: 'Replies go out fast, and stay grounded in what it knows.',
+    points: [
+      'Replies sent within 90 seconds, on the same channel',
+      'Follow-up questions answered in context',
+      'Never invents a price or availability it was not given',
+    ],
   },
   {
     icon: 'ti-user-check',
     title: 'A human is always one click away',
-    body: 'Any conversation can be handed to a named agent instantly, and the AI stops replying the moment that happens. Low-confidence leads route to a person automatically rather than being guessed at.',
-    detail: "The Review Queue shows exactly why the AI wasn't sure, so a person isn't starting from zero.",
+    intro: 'Handoff is instant, and never left to guesswork.',
+    points: [
+      'Any conversation handed to a named agent instantly',
+      'Low-confidence leads route to the Review Queue automatically',
+      "AI reasoning attached, so a person isn't starting from zero",
+    ],
   },
   {
     icon: 'ti-calendar-event',
     title: 'Viewings booked on a real calendar',
-    body: "Once a lead is ready, a viewing goes straight onto your team's actual calendar, not a spreadsheet someone updates at the end of the day. The agent sees the full conversation before they walk in.",
-    detail: 'Cancellations and reschedules sync back the same way, so the calendar never drifts out of date.',
+    intro: 'Booking a viewing does not mean updating a spreadsheet.',
+    points: [
+      "Booking goes straight onto your team's actual calendar",
+      'Agent sees the full conversation before the viewing',
+      'Cancellations and reschedules sync back automatically',
+    ],
   },
   {
     icon: 'ti-refresh',
     title: 'Qualified leads sync to your CRM',
-    body: "A lead that clears qualification is pushed to the CRM your team already works out of, with source and channel attached. Nobody has to copy names and numbers across systems by hand.",
-    detail: 'If a contact already exists, it gets updated in place instead of creating a duplicate.',
+    intro: 'Nothing gets retyped from one system into another.',
+    points: [
+      'Pushed to your existing CRM automatically',
+      'Source and channel attached to every record',
+      'Existing contacts updated, never duplicated',
+    ],
   },
   {
     icon: 'ti-alarm',
     title: 'Cold leads get a second look',
-    body: "A lead nobody has followed up with in a week gets flagged and moved into nurturing automatically, with your team notified. Interested buyers stop quietly falling off the list.",
-    detail: 'The flag comes with how long the lead has been quiet, so it is easy to judge how urgent it is.',
+    intro: 'Interested buyers stop quietly falling off the list.',
+    points: [
+      'Leads quiet for a week are flagged automatically',
+      'Moved into nurturing with your team notified',
+      'Shows exactly how long the lead has been quiet',
+    ],
   },
   {
     icon: 'ti-chart-bar',
     title: 'A clear read on what is working',
-    body: 'Response times, lead sources, and qualification outcomes in one place, so you know which channel and which campaign is actually producing buyers, not just messages.',
-    detail: 'Built for a weekly glance, not a report someone has to assemble by hand.',
+    intro: 'Built for a weekly glance, not a report to assemble.',
+    points: [
+      'Response times, sources, and outcomes in one view',
+      'See which channel and campaign produce buyers',
+      'No spreadsheet exports or manual counting',
+    ],
   },
 ];
 
@@ -103,10 +135,16 @@ function FeatureList() {
         <div className="l-flist-grid">
           {FEATURES.map((f, i) => (
             <div className={`l-fcard reveal d${(i % 4) + 1}`} key={f.title}>
-              <i className={`ti ${f.icon} l-fcard-icon`} aria-hidden="true" />
-              <h3>{f.title}</h3>
-              <p>{f.body}</p>
-              <p className="l-fcard-detail">{f.detail}</p>
+              <div className="l-fcard-head">
+                <i className={`ti ${f.icon} l-fcard-icon`} aria-hidden="true" />
+                <h3>{f.title}</h3>
+              </div>
+              <p className="l-fcard-intro">{f.intro}</p>
+              <ul className="l-fcheck-list">
+                {f.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>

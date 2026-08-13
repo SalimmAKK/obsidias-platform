@@ -71,6 +71,8 @@
   border: 0.5px solid var(--rule);
   border-radius: var(--r);
   padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
   transition: border-color 0.2s, transform 0.2s;
 }
 .l-fcard:hover {
@@ -78,33 +80,65 @@
   transform: translateY(-2px);
 }
 
+.l-fcard-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
 .l-fcard-icon {
-  font-size: 21px;
+  font-size: 19px;
   color: var(--purple);
-  display: block;
-  margin-bottom: 1.125rem;
+  flex-shrink: 0;
 }
 
 .l-fcard h3 {
   font-size: 15.5px;
   font-weight: 500;
   color: var(--ink);
-  margin-bottom: 0.65rem;
 }
 
-.l-fcard p {
-  font-size: 13px;
+.l-fcard-intro {
+  font-size: 12.5px;
   color: var(--ink3);
-  line-height: 1.7;
+  line-height: 1.6;
+  margin-bottom: 1.125rem;
+  padding-bottom: 1.125rem;
+  border-bottom: 0.5px solid var(--rule);
 }
 
-.l-fcard-detail {
-  margin-top: 0.9rem;
-  padding-top: 0.9rem;
-  border-top: 0.5px solid var(--rule);
-  font-size: 12px;
-  color: var(--ink4);
-  line-height: 1.6;
+/* ── CHECKLIST ────────────────────────────────────────────────────────────── */
+.l-fcheck-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: auto;
+}
+
+.l-fcheck-list li {
+  font-size: 12.5px;
+  color: var(--ink2);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+
+.l-fcheck-list li::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--green-lt);
+  border: 0.5px solid var(--green);
+  flex-shrink: 0;
+  margin-top: 1px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%230D9B6E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 9px 9px;
 }
 
 /* ── CTA ROW (this page's variant of the final CTA section) ─────────────── */
