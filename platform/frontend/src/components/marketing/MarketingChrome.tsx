@@ -20,7 +20,7 @@ export function MarketingNav() {
         <div className="o-nav-links">
           <Link href="/features">Features</Link>
           <Link href="/how-it-works">How it works</Link>
-          <Link href="/#pricing">Pricing</Link>
+          <Link href="/pricing">Pricing</Link>
         </div>
         <Link href="/login" className="o-btn o-btn-ink o-btn-sm">
           Request access
@@ -45,7 +45,7 @@ export function MarketingFooter() {
           <Link href="/features">Features</Link>
           <Link href="/how-it-works">How it works</Link>
           <Link href="/#demo">See it work</Link>
-          <Link href="/#pricing">Pricing</Link>
+          <Link href="/pricing">Pricing</Link>
           <Link href="/privacy" title="Non-functional in prototype">Privacy</Link>
           <Link href="/terms" title="Non-functional in prototype">Terms</Link>
         </div>

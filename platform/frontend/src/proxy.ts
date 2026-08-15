@@ -8,7 +8,7 @@ import { getSupabaseEnv } from "@/lib/supabase/env";
 // client-side page can read it and establish the recovery session. If this
 // route required auth, the proxy would bounce the user to /login before
 // that client-side code ever runs.
-const PUBLIC_ROUTES = ["/", "/login", "/reset-password", "/features", "/how-it-works"];
+const PUBLIC_ROUTES = ["/", "/login", "/reset-password", "/features", "/how-it-works", "/pricing"];
 
 function isPublicRoute(pathname: string): boolean {
   if (PUBLIC_ROUTES.includes(pathname)) return true;

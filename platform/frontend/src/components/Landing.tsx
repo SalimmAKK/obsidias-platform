@@ -475,78 +475,6 @@ function Marquee() {
   );
 }
 
-/* ── PRICING ──────────────────────────────────────────────────────────── */
-const PLANS = [
-  {
-    name: 'Independent agency', audience: '1 to 5 agents, one office', price: '$297',
-    desc: 'For agencies under 500 leads a month who want the qualification layer running without hiring for it.',
-    cta: 'Get started', ctaTo: '/login', featured: false,
-    features: ['500 leads per month', 'WhatsApp and email automation', 'AI qualification and scoring', 'CRM sync and appointment booking'],
-  },
-  {
-    name: 'Growing agency', audience: '6 to 25 agents', price: '$797',
-    desc: 'The tier most agencies at this size land on. Every channel, plus reactivation for leads that have gone cold.',
-    cta: 'Get started', ctaTo: '/login', featured: true,
-    features: ['2,500 leads per month', 'WhatsApp, Instagram DM, and email', 'Custom brand voice and AI persona', 'Cold-lead reactivation'],
-  },
-  {
-    name: 'Multi-branch brokerage', audience: '25+ agents, multiple branches', price: 'Custom',
-    desc: 'For brokerages running high volume across branches, with per-branch reporting and a dashboard under your own name.',
-    cta: 'Talk to us', ctaTo: '/contact', featured: false,
-    features: ['Unlimited leads', 'All channels', 'White-label dashboard, per branch', 'Custom brand voice and AI persona'],
-  },
-];
-
-function Pricing() {
-  return (
-    <section className="o-section" id="pricing">
-      <div className="o-wide">
-        <header className="l-head m-reveal">
-          <p className="o-eyebrow">05 — Pricing</p>
-          <h2 className="o-h2">Sized to your agency, <span className="o-dim">not your headcount.</span></h2>
-          <p className="o-lede">
-            No per-agent charges. The limit on every plan is lead volume, so
-            adding agents never adds to your bill.
-          </p>
-        </header>
-
-        <div className="l-plans">
-          {PLANS.map((plan, i) => (
-            <article
-              key={plan.name}
-              className={`o-bezel m-card m-reveal m-d${i + 1}${plan.featured ? ' on-deep l-plan-featured' : ''}`}
-            >
-              <div className="o-bezel-core l-plan">
-                {plan.featured && <span className="l-plan-flag">Most common at this size</span>}
-                <p className="o-mono">{plan.audience}</p>
-                <h3 className="l-plan-name">{plan.name}</h3>
-                <p className="o-body l-plan-desc">{plan.desc}</p>
-                <p className="l-plan-price">
-                  {plan.price}
-                  {plan.price !== 'Custom' && <span> / month</span>}
-                </p>
-                {plan.ctaTo === '/contact' ? (
-                  <a href="#" title="Non-functional in prototype" className={`o-btn ${plan.featured ? 'o-btn-light' : 'o-btn-ghost'} l-plan-btn`}>
-                    {plan.cta}
-                  </a>
-                ) : (
-                  <Link href={plan.ctaTo} className={`o-btn ${plan.featured ? 'o-btn-light' : 'o-btn-ghost'} l-plan-btn`}>
-                    {plan.cta}
-                    <span className="o-btn-icon" aria-hidden="true"><i className="ti ti-arrow-right" /></span>
-                  </Link>
-                )}
-                <ul className="l-plan-list">
-                  {plan.features.map((f, fi) => <li key={`${plan.name}-${fi}`}>{f}</li>)}
-                </ul>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ── CLOSING BAND ─────────────────────────────────────────────────────── */
 function FinalCta() {
   return (
@@ -587,7 +515,6 @@ export default function Landing() {
         <Trust />
         <HowItWorks />
         <Marquee />
-        <Pricing />
         <FinalCta />
       </main>
       <MarketingFooter />
