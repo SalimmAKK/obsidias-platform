@@ -1,322 +1,524 @@
 /* ============================================================================
-   Marketing base — soft premium
+   Marketing base — Atelier Zero
    ============================================================================
-   Shared across the landing page, /features, and /how-it-works: canvas,
-   layout rails, type scale, the double-bezel card primitive, buttons,
-   eyebrows, nav, and footer. Page-specific styles live in their own file
-   next to their component.
+   Shared foundation for every marketing page: rails, type scale, section
+   furniture, buttons, cards, nav, footer. Page-specific layout lives in the
+   page's own stylesheet (Landing.css, Features.css, …).
+
+   Class prefix is `o-` throughout so nothing here can collide with Tailwind
+   utilities or the dashboard's own component classes.
+
+   ── NO GLOBAL SELECTORS IN THIS FILE ──────────────────────────────────────
+   This file must never contain `*`, `html`, or `body` rules. It used to open
+   with `* { margin: 0; padding: 0 }`, and that single line was the cause of
+   the "renders wrong until I reload" bug across the whole product.
+
+   Why it was so destructive: Tailwind v4 emits its utilities inside
+   `@layer utilities`, and in the CSS cascade an UNLAYERED rule beats a
+   layered one no matter how specific the layered one is. So an unlayered
+   `* { padding: 0 }` silently outranks every `p-4`, `p-8`, `mb-6` in the app.
+
+   It only bit after a client-side navigation. On a hard load of /login or
+   /dashboard this stylesheet isn't on the page, so utilities worked. But
+   navigating from a marketing page — clicking "Request access", or the
+   redirect after sign-in — leaves the previous route's stylesheet attached,
+   at which point the reset landed on the dashboard and flattened every
+   padding and margin. Reloading dropped this file and "fixed" it, which is
+   exactly what made it look like a compile/caching problem.
+
+   The reset isn't needed anyway: globals.css is loaded app-wide and
+   Tailwind's preflight already does box-sizing, margin zeroing, and list
+   padding. Anything genuinely global belongs there, not here.
    ========================================================================= */
+
 @import '../../styles/tokens.css';
 @import '../../styles/motion.css';
+@import '../../styles/paper.css';
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Page content sits above the fixed paper grain (z-index 1). */
+.o-shell { position: relative; z-index: 2; }
+
+/* ── LAYOUT ──────────────────────────────────────────────────────────── */
+.o-wide {
+  max-width: 1360px;
+  padding: 0 64px;
+  margin: 0 auto;
+  position: relative;
 }
+.o-narrow { max-width: 900px; }
+/* Tightened from 130px/90px — the page read as too much air between
+   sections at the original scale. */
+.o-section { padding: 88px 0; position: relative; }
+.o-section.tight { padding: 64px 0; }
 
-body {
-  font-family: var(--font);
-  color: var(--ink);
-  background: var(--canvas);
-  line-height: 1.6;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* ── RAILS ───────────────────────────────────────────────────────────────── */
-.o-wide   { max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
-.o-narrow { max-width: 860px;  margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); }
-.o-section { padding: clamp(80px, 11vw, 128px) 0; }
-
-/* ── TYPE ────────────────────────────────────────────────────────────────── */
-.o-display {
-  font-size: clamp(48px, 7vw, 96px);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.96;
-  color: var(--ink);
-}
-.o-display .o-dim { color: var(--ink4); }
-
-.o-h2 {
-  font-size: clamp(32px, 4.4vw, 56px);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  color: var(--ink);
-}
-.o-h2 .o-dim { color: var(--ink4); }
-
-.o-h3 {
-  font-size: clamp(19px, 1.6vw, 22px);
-  font-weight: 700;
-  letter-spacing: -0.018em;
-  line-height: 1.25;
-  color: var(--ink);
-}
-
-.o-lede {
-  font-size: clamp(15px, 1.15vw, 17px);
-  line-height: 1.65;
-  color: var(--ink2);
-  max-width: 52ch;
-}
-
-.o-body {
-  font-size: 14.5px;
-  line-height: 1.68;
-  color: var(--ink2);
-}
-
-.o-mono {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
+/* ── SECTION RULE ────────────────────────────────────────────────────────
+   The roman numeral / description / count strip that opens every section.
+   It's the single strongest signal that this is an editorial system and not
+   a generic SaaS page, so every section gets one. */
+.o-rule {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-bottom: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink4);
+  color: var(--ink-faint);
 }
+.o-rule-roman {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--coral-text);
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: none;
+}
+.o-rule-grp { display: inline-flex; gap: 26px; align-items: center; }
+.o-rule-dot { color: var(--coral-text); }
 
-/* ── EYEBROW ─────────────────────────────────────────────────────────────
-   Pill, mono, wide-tracked, with a small accent dot. Sits above every
-   section header. */
-.o-eyebrow {
+/* ── TYPOGRAPHY ──────────────────────────────────────────────────────── */
+.o-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--coral-text);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: var(--r-pill);
-  background: var(--shell);
-  box-shadow: inset 0 0 0 1px var(--hair);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink3);
+  gap: 12px;
 }
-.o-eyebrow::before {
+.o-label::before {
   content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
+  width: 18px;
+  height: 1px;
+  background: var(--coral);
+  display: inline-block;
   flex-shrink: 0;
 }
-.o-eyebrow.on-deep {
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 0 0 1px var(--hair-dark);
-  color: var(--deep-ink2);
+.o-label .o-ix { color: var(--ink-faint); font-weight: 500; margin-left: 4px; }
+
+.o-display {
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  line-height: 1;
+}
+/* Playfair italic inside a headline is the system's one flourish. It's an
+   <em> so it stays semantic emphasis, not a decorative span. */
+.o-display em,
+.o-h2 em,
+.o-h3 em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+}
+.o-display .o-dot,
+.o-h2 .o-dot,
+.o-h3 .o-dot { color: var(--coral-text); }
+
+.o-h2 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(40px, 4.6vw, 66px);
+  line-height: 1.02;
+  letter-spacing: -0.026em;
+  color: var(--ink);
+}
+.o-h3 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.12;
+  letter-spacing: -0.014em;
+  color: var(--ink);
+}
+.o-lede {
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 42ch;
+}
+.o-body {
+  font-family: var(--body);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-mute);
+}
+.o-mono {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+.o-meta {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
-/* ── DOUBLE BEZEL ────────────────────────────────────────────────────────
-   The core card primitive. An outer shell holds a hairline ring, the soft
-   shadow, and --bezel of padding; the inner core carries the content
-   surface and a radius reduced by exactly that padding, so the two corner
-   arcs stay concentric. Getting that subtraction wrong is what makes nested
-   cards look slightly off without it being obvious why. */
-.o-bezel {
-  background: var(--shell);
-  border-radius: var(--r-shell);
-  padding: var(--bezel);
-  box-shadow: inset 0 0 0 1px var(--hair), var(--lift-1);
-}
-.o-bezel-core {
-  background: var(--core);
-  border-radius: var(--r-core);
-  padding: clamp(20px, 2.4vw, 32px);
-  height: 100%;
-  box-shadow: inset 0 0 0 1px var(--hair);
-}
-
-/* Inverted variant for the one dark card in a bento grid. */
-.o-bezel.on-deep {
-  background: var(--deep2);
-  box-shadow: inset 0 0 0 1px var(--hair-dark), var(--lift-2);
-}
-.o-bezel.on-deep .o-bezel-core {
-  background: var(--deep);
-  box-shadow: inset 0 0 0 1px var(--hair-dark);
-  color: var(--deep-ink);
-}
-.o-bezel.on-deep .o-h3 { color: var(--deep-ink); }
-.o-bezel.on-deep .o-body { color: var(--deep-ink2); }
-.o-bezel.on-deep .o-mono { color: rgba(244, 244, 242, 0.45); }
-
-/* ── BUTTONS ─────────────────────────────────────────────────────────────
-   Primary CTAs are full pills whose trailing arrow lives in its own
-   circular wrapper flush to the right edge — a button inside a button. On
-   hover the inner circle nudges up-and-right and scales slightly; on active
-   the whole pill compresses. */
+/* ── BUTTONS ─────────────────────────────────────────────────────────── */
 .o-btn {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 12px 12px 24px;
+  padding: 14px 22px;
   border-radius: var(--r-pill);
-  font-family: var(--font);
-  font-size: 14.5px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   text-decoration: none;
-  border: none;
+  border: 1px solid transparent;
+  transition: transform 180ms var(--ease), background-color 180ms, color 180ms;
   cursor: pointer;
-  transition:
-    transform 200ms var(--ease),
-    background-color 200ms,
-    color 200ms,
-    box-shadow 200ms var(--ease);
+  white-space: nowrap;
 }
-.o-btn:active { transform: scale(0.98); }
+.o-btn-primary {
+  background: var(--coral);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 14px 26px -16px rgba(237, 111, 92, 1);
+}
+.o-btn-primary:hover { transform: translateY(-1px); background: #e25e4a; }
+.o-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: rgba(23, 24, 28, 0.2);
+}
+.o-btn-ghost:hover { background: rgba(23, 24, 28, 0.04); }
+.o-btn-light {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+}
+.o-btn-light:hover { transform: translateY(-1px); }
+.o-btn-outline {
+  background: transparent;
+  color: var(--deep-ink);
+  border-color: var(--line-dark);
+}
+.o-btn-outline:hover { border-color: rgba(245, 245, 246, 0.4); }
+.o-btn-sm { padding: 10px 16px; font-size: 13px; gap: 9px; }
+.o-btn-arrow {
+  width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.o-btn-arrow svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.6; }
 
-.o-btn-icon {
+/* ── CARD ────────────────────────────────────────────────────────────────
+   Bone fill, hairline ring, the system shadow. The hover lift and the coral
+   top-edge sweep come from .m-card in motion.css. */
+.o-card {
+  padding: 28px 26px 32px;
+  background: var(--bone);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(23, 24, 28, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+.o-card-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--coral-text);
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.o-card-tag {
+  font-family: var(--sans);
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: 500;
+}
+.o-card h3 { margin-bottom: 14px; }
+.o-card p { max-width: 34ch; }
+
+/* Circular arrow mark, bottom-right of a card. The ::after expands the 28px
+   visual to a 44px tap target without changing how it looks. */
+.o-arrow-mark {
+  position: relative;
+  width: 28px; height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  font-size: 13px;
-  transition: transform 200ms var(--ease), background-color 200ms;
-}
-.o-btn:hover .o-btn-icon { transform: translate(1px, -1px) scale(1.05); }
-
-.o-btn-ink { background: var(--ink); color: #fff; }
-.o-btn-ink:hover { background: #000; box-shadow: var(--lift-2); }
-.o-btn-ink .o-btn-icon { background: rgba(255, 255, 255, 0.14); color: #fff; }
-
-.o-btn-ghost {
-  background: var(--shell);
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hair-strong);
-  padding: 12px 22px;
+  transition: background-color 180ms, border-color 180ms;
+  flex-shrink: 0;
 }
-.o-btn-ghost:hover { box-shadow: inset 0 0 0 1px var(--ink4), var(--lift-1); }
+.o-arrow-mark svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+.o-arrow-mark::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 44px; height: 44px;
+  transform: translate(-50%, -50%);
+}
+.o-card:hover .o-arrow-mark,
+.o-arrow-mark:hover,
+.o-arrow-mark:focus-visible {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: var(--ink);
+}
 
-.o-btn-light { background: var(--shell); color: var(--ink); }
-.o-btn-light:hover { box-shadow: var(--lift-2); }
-.o-btn-light .o-btn-icon { background: var(--ink); color: #fff; }
+/* ── DARK SLAB ───────────────────────────────────────────────────────────
+   The one inverted surface per page. Rounded, inset from the gutter, with
+   its own screen-blended grain from .grain-dark. */
+.o-slab {
+  background: var(--deep);
+  color: var(--deep-ink);
+  border-radius: var(--r-2xl);
+  margin: 0 64px;
+  overflow: hidden;
+  position: relative;
+  padding: 80px 56px;
+}
+.o-slab-inner { position: relative; z-index: 1; }
+.o-slab .o-h2,
+.o-slab .o-display { color: var(--deep-ink); }
+.o-slab .o-lede { color: var(--deep-ink2); }
+.o-slab .o-rule { border-color: var(--line-dark); color: rgba(245, 245, 246, 0.55); }
+/* Flip the focus ring on dark — ink-on-near-black is invisible. */
+.o-slab a:focus-visible,
+.o-slab button:focus-visible { outline-color: var(--paper); }
 
-.o-btn-sm { padding: 9px 9px 9px 18px; font-size: 13.5px; }
-.o-btn-sm .o-btn-icon { width: 22px; height: 22px; font-size: 11px; }
-
-/* ── NAV ─────────────────────────────────────────────────────────────────── */
+/* ── NAV ─────────────────────────────────────────────────────────────────
+   The floating pill nav carried over from the previous system, rebuilt on
+   Atelier Zero: paper fill instead of glass, hairline ring, and the coral
+   CTA. Inset from the top rather than edge-to-edge sticky so the paper reads
+   as continuous behind it. */
 .o-nav {
   position: fixed;
-  top: 0;
+  top: 18px;
   left: 0;
   right: 0;
-  z-index: 200;
+  z-index: 50;
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding: 0 24px;
   pointer-events: none;
 }
 .o-nav-pill {
   pointer-events: auto;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: clamp(16px, 2.4vw, 34px);
-  padding: 8px 8px 8px 20px;
+  gap: 28px;
+  padding: 9px 9px 9px 22px;
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  box-shadow: inset 0 0 0 1px var(--hair), var(--lift-1);
+  background: rgba(247, 246, 242, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 0 0 1px var(--line-soft),
+    0 18px 36px -22px rgba(23, 24, 28, 0.3);
+  max-width: 100%;
 }
-
 .o-nav-logo {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  font-size: 15.5px;
+  gap: 11px;
+  font-family: var(--sans);
   font-weight: 700;
+  font-size: 16px;
   letter-spacing: -0.02em;
   color: var(--ink);
   text-decoration: none;
-}
-.o-nav-mark {
-  width: 15px;
-  height: 15px;
-  border-radius: 5px;
-  background: var(--accent);
   flex-shrink: 0;
 }
-
-.o-nav-links { display: flex; align-items: center; gap: clamp(14px, 1.8vw, 26px); }
+.o-nav-mark {
+  width: 27px; height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.o-nav-links { display: inline-flex; align-items: center; gap: 24px; }
 .o-nav-links a {
+  font-family: var(--sans);
   font-size: 13.5px;
   font-weight: 500;
-  color: var(--ink2);
+  letter-spacing: -0.005em;
+  color: var(--ink-mute);
   text-decoration: none;
-  transition: color 180ms;
+  transition: color 160ms;
+  white-space: nowrap;
 }
 .o-nav-links a:hover { color: var(--ink); }
 
-/* ── AMBIENT MESH ────────────────────────────────────────────────────────
-   One slow-drifting radial blob behind the hero. Fixed, non-interactive,
-   very low opacity — it should register as a tint in the canvas, not as a
-   shape. */
-.o-mesh {
-  position: fixed;
-  inset: -20% -10% auto -10%;
-  height: 90vh;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.16;
-  background:
-    radial-gradient(46% 52% at 22% 26%, var(--accent) 0%, transparent 68%),
-    radial-gradient(40% 46% at 78% 18%, var(--green) 0%, transparent 70%);
-  filter: blur(60px);
-}
-
-/* ── FOOTER ──────────────────────────────────────────────────────────────── */
+/* ── FOOTER ──────────────────────────────────────────────────────────── */
 .o-footer {
-  border-top: 1px solid var(--hair);
-  padding: 40px 0;
-  background: var(--canvas);
+  position: relative;
+  z-index: 2;
+  margin-top: 24px;
+  padding-bottom: 8px;
 }
-.o-footer-inner {
+/* The footer as its own raised card on the canvas, rather than a hairline
+   dividing the page from a flush footer band — the shell fill and full
+   corner radius are what read as "clean" against the textured page. */
+.o-foot-card {
+  background: var(--shell);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2xl);
+  padding: 52px 56px 32px;
+}
+.o-foot-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.o-foot-brand { max-width: 34ch; }
+.o-foot-brand p {
+  font-family: var(--body);
+  font-size: 13.5px;
+  color: var(--ink-mute);
+  line-height: 1.55;
+  margin-top: 14px;
+}
+.o-foot-grid {
+  display: flex;
+  gap: 56px;
+  flex-wrap: wrap;
+}
+.o-foot-col h5 {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.o-foot-col ul { list-style: none; }
+.o-foot-col li { margin-bottom: 10px; }
+.o-foot-col a {
+  font-family: var(--body);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 160ms;
+}
+.o-foot-col a:hover { color: var(--coral-text); }
+.o-foot-bottom {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
   flex-wrap: wrap;
-  gap: 20px;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
-.o-footer-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 14.5px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.o-foot-bottom b { color: var(--ink); }
+.o-foot-bottom .right { display: inline-flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+.o-pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* The oversized wordmark closes the page as a ghost mark bleeding off the
+   bottom of the viewport — set faint against the canvas and masked to
+   dissolve, rather than boxed in as its own dark band. */
+.o-foot-mega {
+  overflow: hidden;
+  padding-top: 36px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 90%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 35%, transparent 90%);
+}
+.o-foot-word {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(72px, 13vw, 200px);
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+  color: var(--line-soft);
+  white-space: nowrap;
+  padding-bottom: 0.1em;
+  text-align: center;
+}
+.o-foot-word .o-dot { color: var(--coral-text); opacity: 0.4; }
+
+/* ── LINKS ───────────────────────────────────────────────────────────── */
+.o-inline-link {
   color: var(--ink);
   text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition: color 160ms, border-color 160ms;
 }
-.o-footer-links { display: flex; gap: clamp(14px, 2vw, 28px); flex-wrap: wrap; }
-.o-footer-links a {
+.o-inline-link:hover { color: var(--coral-text); border-bottom-color: var(--coral); }
+.o-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--sans);
   font-size: 13px;
-  color: var(--ink3);
+  color: var(--ink);
   text-decoration: none;
-  transition: color 180ms;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--coral);
+  padding-bottom: 6px;
 }
-.o-footer-links a:hover { color: var(--ink); }
-.o-footer-meta { color: var(--ink4); }
+.o-read-more::after { content: '→'; color: var(--coral-text); }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────────────────
-   Under 768px everything collapses to a single column and every rotation
-   or overlap is removed — a tilted card on a 375px screen is just a
-   misaligned card. */
-@media (max-width: 860px) {
+/* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .o-wide { padding: 0 44px; }
+  .o-slab { margin: 0 44px; padding: 64px 44px; }
+}
+@media (max-width: 1080px) {
+  .o-wide { padding: 0 32px; }
+}
+@media (max-width: 880px) {
+  .o-wide { padding: 0 24px; }
+  .o-slab { margin: 0 12px; padding: 48px 24px; }
   .o-nav-links { display: none; }
-  .o-nav-pill { gap: 14px; }
+  .o-nav-pill { gap: 14px; padding-left: 18px; }
+  .o-foot-card { padding: 40px 32px 28px; }
+  .o-foot-top { gap: 32px; }
+  .o-foot-grid { gap: 32px; }
 }
-
-@media (max-width: 768px) {
-  .o-footer-inner { flex-direction: column; text-align: center; }
-  .o-footer-links { justify-content: center; }
+@media (max-width: 560px) {
+  .o-wide { padding: 0 16px; }
+  .o-section { padding: 56px 0; }
+  .o-rule { font-size: 9.5px; letter-spacing: 0.14em; }
+  .o-rule-grp { display: none; }
+  .o-foot-card { padding: 32px 20px 24px; border-radius: var(--r-xl); }
+  .o-foot-grid { flex-direction: column; gap: 24px; }
+  .o-foot-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
 }

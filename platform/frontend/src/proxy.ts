@@ -12,6 +12,11 @@ const PUBLIC_ROUTES = ["/", "/login", "/reset-password", "/features", "/how-it-w
 
 function isPublicRoute(pathname: string): boolean {
   if (PUBLIC_ROUTES.includes(pathname)) return true;
+  // OAuth lands here with no session yet — it's the route that CREATES the
+  // session by exchanging the provider's code for one. Same reasoning as
+  // /reset-password above: gate it and the proxy bounces the user to
+  // /login before the exchange ever runs.
+  if (pathname === "/auth/callback") return true;
   // Static assets, Next internals, and API routes handle their own auth
   // (or are intentionally public, e.g. future inbound webhooks).
   if (pathname.startsWith("/_next")) return true;

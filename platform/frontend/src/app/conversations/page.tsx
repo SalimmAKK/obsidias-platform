@@ -70,15 +70,15 @@ const CHANNEL_LABELS: Record<string, string> = {
 function ChannelIcon({ channel, className }: { channel: string; className?: string }) {
   switch (channel) {
     case "whatsapp":
-      return <WhatsAppIcon className={cn("w-4 h-4 text-emerald-500", className)} />;
+      return <WhatsAppIcon className={cn("w-4 h-4 text-[var(--ink3)]", className)} />;
     case "sms":
-      return <Phone className={cn("w-4 h-4 text-sky-500", className)} />;
+      return <Phone className={cn("w-4 h-4 text-[var(--ink3)]", className)} />;
     case "email":
-      return <Mail className={cn("w-4 h-4 text-indigo-500", className)} />;
+      return <Mail className={cn("w-4 h-4 text-[var(--ink3)]", className)} />;
     case "instagram_dm":
-      return <InstagramIcon className={cn("w-4 h-4 text-pink-500", className)} />;
+      return <InstagramIcon className={cn("w-4 h-4 text-[var(--ink3)]", className)} />;
     default:
-      return <MessageSquare className={cn("w-4 h-4 text-gray-400", className)} />;
+      return <MessageSquare className={cn("w-4 h-4 text-[var(--ink3)]", className)} />;
   }
 }
 
@@ -402,8 +402,8 @@ export default function ConversationsPage() {
                         {/* Bucket badge */}
                         <span style={{
                           fontSize: "10px", padding: "2px 6px", borderRadius: "4px", fontWeight: 600,
-                          background: t.bucket === "hot" ? "#2A1030" : t.bucket === "warm" ? "var(--green-lt)" : "var(--rule)",
-                          color: t.bucket === "hot" ? "#C77DFF" : t.bucket === "warm" ? "var(--green)" : "var(--ink2)",
+                          background: t.bucket === "hot" ? "var(--st-active-bg)" : t.bucket === "warm" ? "var(--st-warn-bg)" : "var(--st-neutral-bg)",
+                          color: t.bucket === "hot" ? "var(--st-active)" : t.bucket === "warm" ? "var(--st-warn)" : "var(--st-neutral)",
                         }}>
                           {t.bucket.charAt(0).toUpperCase() + t.bucket.slice(1)}
                         </span>
@@ -429,9 +429,9 @@ export default function ConversationsPage() {
                 display: "flex", alignItems: "center", justifyContent: "space-between",
                 flexShrink: 0,
                 background: activeThread.bucket === "hot"
-                  ? "linear-gradient(90deg, rgba(91,79,245,0.08) 0%, var(--card) 60%)"
+                  ? "linear-gradient(90deg, var(--st-active-bg) 0%, var(--card) 60%)"
                   : activeThread.bucket === "warm"
-                  ? "linear-gradient(90deg, rgba(16,185,129,0.08) 0%, var(--card) 60%)"
+                  ? "linear-gradient(90deg, var(--st-warn-bg) 0%, var(--card) 60%)"
                   : "var(--card)",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -527,11 +527,11 @@ export default function ConversationsPage() {
                             padding: "10px 14px",
                             borderRadius: isOut ? "14px 14px 2px 14px" : "14px 14px 14px 2px",
                             background: isOut
-                              ? (m.isHuman ? "linear-gradient(135deg, #4f46e5, #6366f1)" : "linear-gradient(135deg, var(--purple), #8B78FC)")
+                              ? (m.isHuman ? "var(--ink)" : "var(--st-active)")
                               : "var(--card)",
                             color: isOut ? "var(--card)" : "var(--ink)",
                             border: isOut ? "none" : "0.5px solid var(--rule)",
-                            boxShadow: isOut ? "0 2px 8px rgba(91,79,245,0.18)" : "0 1px 3px rgba(0,0,0,0.04)",
+                            boxShadow: isOut ? "0 2px 8px rgba(23,24,28,0.12)" : "0 1px 3px rgba(0,0,0,0.04)",
                           }}>
                             {m.content}
                           </div>
@@ -576,7 +576,7 @@ export default function ConversationsPage() {
                     lineHeight: "1.4",
                     fontFamily: "inherit",
                   }}
-                  onFocus={e => { e.currentTarget.style.borderColor = "var(--purple)"; e.currentTarget.style.boxShadow = "0 0 0 2px rgba(91,79,245,0.15)"; }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "var(--purple)"; e.currentTarget.style.boxShadow = "0 0 0 2px var(--st-active-bg)"; }}
                   onBlur={e => { e.currentTarget.style.borderColor = "var(--rule)"; e.currentTarget.style.boxShadow = "none"; }}
                 />
                 <button
@@ -588,7 +588,7 @@ export default function ConversationsPage() {
                     color: "var(--card)", cursor: "pointer", flexShrink: 0,
                     opacity: (sending || !composeText.trim()) ? 0.5 : 1,
                     transition: "opacity 0.15s",
-                    boxShadow: "0 2px 8px rgba(91,79,245,0.25)",
+                    boxShadow: "0 2px 8px rgba(208,83,60,0.28)",
                   }}
                   aria-label="Send message"
                 >

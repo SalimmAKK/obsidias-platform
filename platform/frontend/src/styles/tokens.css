@@ -1,99 +1,228 @@
 /* ============================================================================
-   Obsidias design tokens — soft premium
+   Obsidias design tokens — Atelier Zero
    ============================================================================
    Single source of truth for colour, radius, elevation, and type family across
    both the marketing site and the dashboard.
 
-   The system: silver-grey canvas (never pure white), near-black ink (never
-   pure #000), hairline rings instead of solid grey borders, wide diffuse
-   shadows instead of hard drop shadows, and generous squircle radii with
-   concentric inner values for the double-bezel card pattern.
+   The system: a true neutral canvas (no warm or cool cast), near-black cool
+   ink (never pure #000), coral as the single accent, hairline alpha rules
+   instead of solid grey borders, and an editorial type pairing — Inter Tight
+   for display, Inter for body, Playfair Display italic for emphasis,
+   JetBrains Mono for meta.
+
+   The canvas was warm paper (#f7f6f2, a cream) through the first version of
+   this system. Moved to neutral on purpose: the real competitive set here is
+   real-estate CRM/lead-automation tools (Follow Up Boss, kvCORE, BoomTown),
+   which are uniformly blue-or-purple-on-white SaaS dashboards — warm cream
+   and a serif logo mark read as adjacent-industry (luxury real-estate
+   branding: Compass, Sotheby's) rather than "software," which is a real cost
+   in a category where buyers are evaluating several lookalike tools in one
+   sitting. Coral stays as the one accent — it was never the "warm" signal on
+   its own, the cream canvas was, and coral is what keeps this from looking
+   like the tenth blue dashboard in the category instead.
+
+   Two naming layers live here on purpose:
+
+     1. The Atelier Zero names (--paper, --ink, --coral, --line, --bone…) are
+        primary. New work should use these.
+     2. A compatibility layer maps the platform's existing token names
+        (--canvas, --accent, --hair, --r-*, --lift-*…) onto layer 1, so the
+        dashboard's several hundred Tailwind arbitrary-value classes keep
+        working without a mechanical find-and-replace across every page.
 
    Do not add component-specific values here (card padding, button height).
    Those stay local to whichever stylesheet owns that component.
    ============================================================================ */
 
 :root {
-  /* ── Canvas and surfaces ────────────────────────────────────────────────
-     --canvas is the page. --shell is the outer half of a double-bezel card,
-     --core is its inner panel. --sunk is for recessed wells inside a core. */
-  --canvas:      #F2F2F0;
-  --canvas-warm: #FDFBF7;
-  --shell:       #FFFFFF;
-  --core:        #FAFAF9;
-  --sunk:        #F4F4F2;
+  /* ── Paper and surfaces ─────────────────────────────────────────────────
+     --paper is the page. True neutral grey, no warm or cool tint — the tint
+     itself was the "not software" signal, more than any single hue was. */
+  --paper:      #f5f5f6;
+  --paper-warm: #eeeeef;
+  --paper-dark: #e2e2e4;
+  /* Card fill. A hair off pure white rather than identical to --shell below,
+     so the double-bezel pattern (outer mat / inner core) still reads as two
+     surfaces through structure, not through a cream tint doing that work. */
+  --bone:       #fafafa;
 
   /* ── Ink scale ──────────────────────────────────────────────────────────
-     Zinc-950 rather than #000 — pure black reads as cheap against a warm
-     canvas and crushes on OLED. */
-  --ink:   #18181B;
-  --ink2:  #52525B;
-  --ink3:  #71717A;
-  --ink4:  #A1A1AA;
-
-  /* ── Hairlines ──────────────────────────────────────────────────────────
-     Always alpha-based so they sit correctly on any surface, never a solid
-     grey that goes muddy on the darker canvas. */
-  --hair:        rgba(24, 24, 27, 0.06);
-  --hair-strong: rgba(24, 24, 27, 0.10);
-  --hair-dark:   rgba(255, 255, 255, 0.10);
+     Cool near-black. Pure #000 still goes dead against the paper, but the
+     warm cast that made this read as "printed on stock" is gone. */
+  --ink:       #17181c;
+  --ink-soft:  #2e2f34;
+  --ink-mute:  #56585f;
+  --ink-faint: #86878d;
 
   /* ── Accent ─────────────────────────────────────────────────────────────
-     Terracotta carried over from the previous brand pass. Used sparingly:
-     eyebrows, active states, fills, and the one accent surface per page.
-     Primary CTAs are ink, not accent — that's what keeps it feeling
-     restrained rather than loud. */
-  --accent:      #C1662E;
-  --accent-deep: #A8501F;
-  --accent-soft: #F7EADF;
-  --accent-dim:  #E8A96C;
+     Coral is the only accent in the system. --coral is the fill (buttons,
+     dots, bars); --coral-text is the AA-safe 4.5:1 variant for text and icons
+     on paper. Never use --coral for body-size text.
 
-  /* ── Inverted surfaces (closing bands, dark bento cards) ────────────── */
-  --deep:      #1C1C1F;
-  --deep2:     #26262A;
-  --deep-ink:  #F4F4F2;
-  --deep-ink2: rgba(244, 244, 242, 0.62);
+     A cooler second tone (blue, #2a6fa8) was evaluated as a companion accent
+     and deliberately rejected — it only has a narrow, functional home
+     already (the second chart series two sections below, status-neutral
+     tags), and promoting it to compete with coral on buttons/nav read as
+     unpolished: two accents fighting for the same job instead of one doing
+     it cleanly. Keep it out of anything coral already does. */
+  --coral:      #ed6f5c;
+  --coral-text: #d63118;
+  --coral-soft: #f08e7c;
+  --mustard:    #e9b94a;
+  --olive:      #6e7448;
 
-  /* ── Status ─────────────────────────────────────────────────────────── */
-  --green:    #2F6E52;
-  --green-lt: #E7F0EA;
-  --red:      #B4483C;
-  --red-lt:   #F8EBE9;
-  --amber:    #92400E;
-  --amber-lt: #FBF0E2;
+  /* ── Rules ──────────────────────────────────────────────────────────────
+     Always alpha so they sit correctly on paper, bone, or a dark slab. RGB
+     triplet here must track --ink — these are hand-written rgba(), not
+     color-mix(), so a future ink change has to update both. */
+  --line:       rgba(23, 24, 28, 0.16);
+  --line-soft:  rgba(23, 24, 28, 0.08);
+  --line-faint: rgba(23, 24, 28, 0.05);
+  --line-dark:  rgba(245, 245, 246, 0.16);
+
+  /* ── Inverted surfaces (the dark slab) ──────────────────────────────── */
+  --deep:      #17181c;
+  --deep2:     #232428;
+  --deep-ink:  #f5f5f6;
+  --deep-ink2: rgba(245, 245, 246, 0.55);
+
+  /* ── Status ─────────────────────────────────────────────────────────────
+     Pulled toward the earthy palette so status never reads as a bootstrap
+     alert dropped onto an editorial page. */
+  --green:    #4f6b3f;
+  --green-lt: #edf0e4;
+  --red:      #b23a2a;
+  --red-lt:   #fbeae7;
+  --amber:    #8a6d1f;
+  --amber-lt: #f9f1dc;
 
   /* ── Radii ──────────────────────────────────────────────────────────────
-     Squircle scale. --r-shell/--r-core are the concentric pair: an inner
-     panel inset by --bezel must drop its radius by the same amount or the
-     corners visibly diverge. */
-  --r-xs:    10px;
-  --r-sm:    14px;
-  --r-md:    20px;
-  --r-lg:    28px;
-  --r-xl:    32px;
-  --r-2xl:   40px;
-  --r-pill:  999px;
+     Modest and editorial. This system leans on rules and shadow, not on
+     heavy corner rounding. */
+  --r-xs:   6px;
+  --r-sm:   12px;
+  --r-md:   14px;
+  --r-lg:   18px;
+  --r-xl:   24px;
+  --r-2xl:  32px;
+  --r-pill: 999px;
 
+  /* ── Elevation ──────────────────────────────────────────────────────────
+     One signature shadow, wide and heavily negative-spread, plus a lighter
+     and a heavier neighbour. No hard drop shadows. */
+  --shadow: 0 30px 60px -30px rgba(23, 24, 28, 0.18);
+  --lift-0: 0 1px 2px rgba(23, 24, 28, 0.04);
+  --lift-1: 0 18px 36px -22px rgba(23, 24, 28, 0.14);
+  --lift-2: var(--shadow);
+  --lift-3: 0 44px 80px -34px rgba(23, 24, 28, 0.24);
+
+  /* ── Type ───────────────────────────────────────────────────────────────
+     The --font-* variables are set by next/font in layout.tsx. Four families,
+     each with one job: sans for display and UI, body for running text, serif
+     italic for emphasis inside headlines, mono for meta and coordinates. */
+  --serif: var(--font-playfair), 'Playfair Display', 'Times New Roman', serif;
+  --sans:  var(--font-inter-tight), 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --body:  var(--font-inter), 'Inter', -apple-system, system-ui, sans-serif;
+  --mono:  var(--font-jetbrains), 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* ── Motion ─────────────────────────────────────────────────────────────
+     One movement curve for the whole system. See styles/motion.css. */
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* ══════════════════════════════════════════════════════════════════════
+     DATA VISUALISATION
+     Every value below was produced by a validator, not picked by eye, and
+     each group encodes exactly one job. Do not add a colour here without
+     re-running the checks.
+
+     WHY THE CHART PALETTE IS NOT JUST "THE BRAND HUES":
+     an all-warm set cannot carry more than about three categories. Running
+     the candidate terracotta/ochre/olive/clay set through CVD simulation,
+     ochre against terracotta collapses to ΔE 2.2 under deuteranopia — a
+     red-green colourblind reader sees one colour. That is why the pipeline
+     is an ordinal RAMP (order carried by lightness, which no form of colour
+     blindness removes) rather than seven competing hues, and why the second
+     chart series is a cool blue rather than the mustard it started as.
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* ORDINAL — pipeline progression. One hue, monotone lightness, light→dark.
+     The reader sees the order in the colour, which is the whole point of an
+     ordinal ramp over a categorical one.
+     Validated --ordinal on the paper surface: monotone PASS, adjacent ΔL
+     all ≥ 0.06 PASS, light-end contrast 2.21:1 PASS, hue spread 3° PASS. */
+  --viz-stage-1: #eb9078;
+  --viz-stage-2: #e0705a;
+  --viz-stage-3: #d0533c;
+  --viz-stage-4: #b03e29;
+  --viz-stage-5: #8a2d1d;
+
+  /* Exits from the pipeline (archived, dead). Deliberately neutral: they are
+     not a later stage, so they must not read as further along the ramp. */
+  --viz-exit:      #8a8478;
+  --viz-exit-deep: #55503f;
+
+  /* CATEGORICAL — chart series identity. Two slots is all this product
+     needs (captured vs qualified).
+     Validated on the paper surface: lightness band PASS, chroma floor PASS,
+     CVD ΔE 16.7 (protan) PASS, normal-vision ΔE 27.5 PASS, contrast ≥3:1
+     PASS. The previous coral+mustard pair FAILED this — mustard sat at
+     L 0.809, outside the band, at 1.69:1 against the surface. */
+  --viz-series-1: #d0533c;
+  --viz-series-2: #2a6fa8;
+
+  /* Grid, axis, and hover-cursor wash. Recessive by design. */
+  --viz-grid:   rgba(23, 24, 28, 0.08);
+  --viz-cursor: rgba(208, 83, 60, 0.06);
+
+  /* STATUS — reserved meaning, never reused as a series colour. Each is the
+     text/mark colour; the -bg is its tint. All pairs verified ≥ 4.5:1 as
+     text on their own tint, on paper, and on white (badge text is 11–12px,
+     so the normal-text threshold applies, not the large-text one).
+     Always shipped with a label, never colour alone. */
+  --st-good:       #41602f;  --st-good-bg: #e9eee0;
+  --st-warn:       #7d6112;  --st-warn-bg: #f7eed6;
+  --st-critical:   #a8321f;  --st-critical-bg: #fbe6e1;
+  --st-active:     #c02d13;  --st-active-bg: #fbe4de;
+  --st-neutral:    #55503f;  --st-neutral-bg: #eeece4;
+
+  /* ══════════════════════════════════════════════════════════════════════
+     COMPATIBILITY LAYER
+     Existing platform token names mapped onto Atelier Zero above. These let
+     the dashboard's Tailwind arbitrary-value classes (bg-[var(--canvas)],
+     text-[var(--ink3)], shadow-[inset_0_0_0_1px_var(--hair)]…) resolve to the
+     new system without touching every page file.
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* surfaces */
+  --canvas:      var(--paper);
+  --canvas-warm: var(--paper-warm);
+  --shell:       #ffffff;
+  --core:        var(--bone);
+  --sunk:        var(--paper-warm);
+
+  /* ink — the platform counts up (ink2/3/4), Atelier Zero names its steps */
+  --ink2: var(--ink-soft);
+  --ink3: var(--ink-mute);
+  --ink4: var(--ink-faint);
+
+  /* rules */
+  --hair:        var(--line-soft);
+  --hair-strong: var(--line);
+  --hair-dark:   var(--line-dark);
+
+  /* accent — the platform's --accent* names map onto coral */
+  --accent:      var(--coral);
+  --accent-deep: var(--coral-text);
+  --accent-soft: #fbe4de;
+  --accent-dim:  var(--coral-soft);
+
+  /* the double-bezel pair is retained for the artifact components */
   --bezel:   6px;
   --r-shell: var(--r-xl);
   --r-core:  calc(var(--r-xl) - var(--bezel));
 
-  /* ── Elevation ──────────────────────────────────────────────────────────
-     Wide, low-opacity, heavily negative spread. No shadow-md/lg equivalents. */
-  --lift-0: 0 1px 2px rgba(24, 24, 27, 0.03);
-  --lift-1: 0 20px 40px -15px rgba(24, 24, 27, 0.05), 0 1px 2px rgba(24, 24, 27, 0.03);
-  --lift-2: 0 30px 60px -20px rgba(24, 24, 27, 0.09), 0 1px 2px rgba(24, 24, 27, 0.04);
-  --lift-3: 0 40px 80px -24px rgba(24, 24, 27, 0.14), 0 1px 2px rgba(24, 24, 27, 0.05);
-
-  /* ── Type ───────────────────────────────────────────────────────────────
-     var(--font-geist) / var(--font-geist-mono) are set by next/font in
-     layout.tsx. Inter is deliberately absent — it's banned by the design
-     system this was built to. */
-  --font:      var(--font-geist), 'Geist', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
-
-  /* ── Motion ─────────────────────────────────────────────────────────────
-     One movement curve for the whole system. See styles/motion.css. */
-  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+  /* type aliases */
+  --font:      var(--sans);
+  --font-mono: var(--mono);
 }

@@ -32,7 +32,7 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = "max-w-[680
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-[rgba(24,24,27,0.28)] backdrop-blur-[3px]"
+        className="absolute inset-0 bg-[rgba(23,24,28,0.32)] backdrop-blur-[3px]"
         style={{ animation: "fadeIn 0.2s ease" }}
         onClick={onClose}
       />

@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { AlertCircle, CheckCircle2, Eye, EyeOff, Lock, Hexagon } from "lucide-react";
+import { AlertCircle, CheckCircle2, Eye, EyeOff, Lock } from "lucide-react";
 import { GlassPanel } from "@/components/GlassPanel";
 import { Button } from "@/components/Button";
 import { supabase } from "@/lib/supabase";
@@ -93,9 +93,14 @@ function ResetPasswordForm() {
       >
         <GlassPanel className="p-8 md:p-10">
           <div className="flex flex-col items-center mb-8">
-            <div className="w-10 h-10 rounded-xl bg-[var(--purple)] flex items-center justify-center mb-4">
-              <Hexagon className="w-5 h-5 text-white" />
-            </div>
+            {/* Same serif-in-a-circle mark as the marketing nav and sidebar. */}
+            <span
+              className="w-10 h-10 rounded-full border-[1.5px] border-[var(--ink)] flex items-center justify-center mb-4 italic text-[19px] text-[var(--ink)]"
+              style={{ fontFamily: "var(--serif)" }}
+              aria-hidden="true"
+            >
+              O
+            </span>
             <p className="font-sans font-semibold text-[11px] tracking-[0.14em] text-[var(--ink3)] uppercase mb-3">Obsidias</p>
             <h1 className="font-sans font-medium text-[21px] text-[var(--ink)] tracking-tight">Set a new password</h1>
           </div>

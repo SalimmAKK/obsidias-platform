@@ -53,9 +53,9 @@ export function AppLayout({ children, title, greeting = false }: AppLayoutProps)
 
       <div className="flex-1 min-w-0 flex flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 bg-[rgba(242,242,240,0.78)] backdrop-blur-xl shadow-[inset_0_-1px_0_var(--hair)] flex items-center justify-between px-8 h-[68px] shrink-0">
+        <header className="sticky top-0 z-30 bg-[rgba(247,246,242,0.82)] backdrop-blur-xl shadow-[inset_0_-1px_0_var(--hair)] flex items-center justify-between px-8 h-[68px] shrink-0">
           <h1 className="font-sans font-bold text-[22px] text-[var(--ink)] tracking-[-0.03em]">
-            {greeting ? `${timeOfDay}, ${displayName}!` : title}
+            {greeting ? `${timeOfDay}, ${displayName}` : title}
           </h1>
           <div className="flex items-center gap-3">
             <button className="ghost-button !py-2 !px-4 flex items-center gap-2 !text-[13px]">
@@ -63,7 +63,7 @@ export function AppLayout({ children, title, greeting = false }: AppLayoutProps)
               Share
             </button>
             <div className="flex items-center gap-2.5 pl-4 ml-1 shadow-[inset_1px_0_0_var(--hair)]">
-              <div className="w-8 h-8 rounded-full bg-[var(--accent-soft)] text-[var(--accent-deep)] flex items-center justify-center text-[13px] font-bold shadow-[inset_0_0_0_1px_var(--hair)] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[var(--bone)] text-[var(--ink)] flex items-center justify-center text-[13px] font-bold shadow-[inset_0_0_0_1px_var(--hair-strong)] shrink-0">
                 {initials}
               </div>
               <span className="font-sans font-semibold text-[13.5px] text-[var(--ink)]">{name || email || "Loading…"}</span>

@@ -10,6 +10,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { GlassPanel } from "@/components/GlassPanel";
 import { ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 import type { AnalyticsResponse } from "@/app/api/v1/analytics/route";
+import { STATUS_COLORS, BUCKET_COLORS, SERIES_1, SERIES_2, CURSOR_WASH, EXIT } from "@/lib/vizColors";
 
 /* Entrance animation intentionally disabled on dashboard surfaces.
    `initial` values are server-rendered as inline styles, so an
@@ -30,11 +31,6 @@ const STATUS_LABELS: Record<string, string> = {
   new: "New", needs_review: "Needs Review", qualified: "Qualified",
   nurturing: "Nurturing", booked: "Booked", archived: "Archived", dead: "Dead",
 };
-const STATUS_COLORS: Record<string, string> = {
-  new: "#8B78FC", needs_review: "#F59E0B", qualified: "#10B981",
-  nurturing: "#0EA5E9", booked: "#059669", archived: "#9CA3AF", dead: "#EF4444",
-};
-const BUCKET_COLORS: Record<string, string> = { hot: "#C77DFF", warm: "#10B981", cold: "#9CA3AF" };
 
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -126,8 +122,8 @@ export default function AnalyticsPage() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--rule)" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10, fontWeight: 600 }} dy={8} interval={1} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(91,79,245,0.05)" }} />
-                <Bar dataKey="leads" name="Leads" fill="#C1662E" radius={[4, 4, 0, 0]} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: CURSOR_WASH }} />
+                <Bar dataKey="leads" name="Leads" fill={SERIES_1} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -175,7 +171,7 @@ export default function AnalyticsPage() {
                     <span className="font-sans font-semibold text-[13px] text-[var(--ink)]">{s.count}</span>
                   </div>
                   <div className="h-1.5 rounded-full bg-[var(--bg)] overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${(s.count / totalStatus) * 100}%`, background: STATUS_COLORS[s.status] || "#9CA3AF" }} />
+                    <div className="h-full rounded-full" style={{ width: `${(s.count / totalStatus) * 100}%`, background: STATUS_COLORS[s.status] || EXIT }} />
                   </div>
                 </div>
               ))}

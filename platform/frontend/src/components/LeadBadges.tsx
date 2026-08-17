@@ -11,14 +11,20 @@ export type LeadStatus = "new" | "needs_review" | "qualified" | "nurturing" | "b
 export type LeadBucket = "hot" | "warm" | "cold";
 export type LeadChannel = "sms" | "whatsapp" | "email" | "instagram_dm";
 
+/* Status wears the RESERVED status scale, not chart-series colours — these
+   mean good/warning/critical, and the skill's collision rule is that a thing
+   which means good or bad wears status tokens and never doubles as "series
+   4". Every pair here was contrast-checked as 11–12px text on its own tint,
+   on paper, and on white; all clear 4.5:1. The label is always present, so
+   identity is never carried by colour alone. */
 const STATUS_STYLES: Record<LeadStatus, { pill: string; dot: string; label: string }> = {
-  new:          { pill: "bg-[var(--purple-lt)] text-[var(--purple)]", dot: "bg-[var(--purple)]", label: "New" },
-  needs_review: { pill: "bg-amber-50 text-amber-600",                  dot: "bg-amber-500 animate-pulse", label: "Needs Review" },
-  qualified:    { pill: "bg-[var(--green-lt)] text-[var(--green)]",   dot: "bg-[var(--green)]", label: "Qualified" },
-  nurturing:    { pill: "bg-sky-50 text-sky-600",                      dot: "bg-sky-500", label: "Nurturing" },
-  booked:       { pill: "bg-[var(--green-lt)] text-[var(--green)]",   dot: "bg-[var(--green)]", label: "Booked" },
-  archived:     { pill: "bg-[var(--rule)] text-[var(--ink3)]",        dot: "bg-[var(--ink3)]", label: "Archived" },
-  dead:         { pill: "bg-[var(--red-lt)] text-[var(--red)]",       dot: "bg-[var(--red)]", label: "Dead" },
+  new:          { pill: "bg-[var(--st-active-bg)] text-[var(--st-active)]",     dot: "bg-[var(--st-active)]",   label: "New" },
+  needs_review: { pill: "bg-[var(--st-warn-bg)] text-[var(--st-warn)]",         dot: "bg-[var(--st-warn)] animate-pulse", label: "Needs Review" },
+  qualified:    { pill: "bg-[var(--st-good-bg)] text-[var(--st-good)]",         dot: "bg-[var(--st-good)]",     label: "Qualified" },
+  nurturing:    { pill: "bg-[var(--st-neutral-bg)] text-[var(--st-neutral)]",   dot: "bg-[var(--st-neutral)]",  label: "Nurturing" },
+  booked:       { pill: "bg-[var(--st-good-bg)] text-[var(--st-good)]",         dot: "bg-[var(--st-good)]",     label: "Booked" },
+  archived:     { pill: "bg-[var(--st-neutral-bg)] text-[var(--st-neutral)]",   dot: "bg-[var(--st-neutral)]",  label: "Archived" },
+  dead:         { pill: "bg-[var(--st-critical-bg)] text-[var(--st-critical)]", dot: "bg-[var(--st-critical)]", label: "Dead" },
 };
 
 export function LeadStatusBadge({ status, className }: { status: string; className?: string }) {
@@ -34,10 +40,14 @@ export function LeadStatusBadge({ status, className }: { status: string; classNa
   );
 }
 
+/* Buckets are ordinal — hot > warm > cold — so intensity, not three
+   unrelated hues, carries the order. Was a near-black plum chip with neon
+   purple text (#2A1030/#C77DFF), a dark-theme component stranded in a light
+   app since the original design. */
 const BUCKET_STYLES: Record<LeadBucket, string> = {
-  hot:  "bg-[#2A1030] text-[#C77DFF]",
-  warm: "bg-[var(--green-lt)] text-[var(--green)]",
-  cold: "bg-[var(--rule)] text-[var(--ink3)]",
+  hot:  "bg-[var(--st-active-bg)] text-[var(--st-active)]",
+  warm: "bg-[var(--st-warn-bg)] text-[var(--st-warn)]",
+  cold: "bg-[var(--st-neutral-bg)] text-[var(--st-neutral)]",
 };
 
 export function BucketBadge({ bucket, className }: { bucket: string; className?: string }) {
@@ -75,12 +85,17 @@ export const CHANNEL_LABELS: Record<LeadChannel, string> = {
   instagram_dm: "Instagram DM",
 };
 
+/* Channel is nominal, and it always appears beside the channel's own name or
+   in a labelled column — so the icon SHAPE already carries identity and the
+   colour was doing no work. Five unrelated brand hues (emerald, sky, indigo,
+   pink, gray) just fought the page. One recessive ink for all of them. */
 export function ChannelIcon({ channel, className }: { channel: string; className?: string }) {
+  const tone = "w-4 h-4 text-[var(--ink3)]";
   switch (channel) {
-    case "whatsapp": return <WhatsAppIcon className={cn("w-4 h-4 text-emerald-500", className)} />;
-    case "sms": return <Phone className={cn("w-4 h-4 text-sky-500", className)} />;
-    case "email": return <Mail className={cn("w-4 h-4 text-indigo-500", className)} />;
-    case "instagram_dm": return <InstagramIcon className={cn("w-4 h-4 text-pink-500", className)} />;
-    default: return <MessageSquare className={cn("w-4 h-4 text-gray-400", className)} />;
+    case "whatsapp": return <WhatsAppIcon className={cn(tone, className)} />;
+    case "sms": return <Phone className={cn(tone, className)} />;
+    case "email": return <Mail className={cn(tone, className)} />;
+    case "instagram_dm": return <InstagramIcon className={cn(tone, className)} />;
+    default: return <MessageSquare className={cn(tone, className)} />;
   }
 }

@@ -106,27 +106,27 @@ export default PipelineArtifact;
 
 const CSS = `
 .pa-wrap{
-  --pa-ink:#18181B; --pa-muted:#71717A; --pa-faint:#A1A1AA;
-  --pa-line:rgba(24,24,27,0.06); --pa-core:#FAFAF9; --pa-sunk:#F2F2F0;
-  --pa-accent:#C1662E; --pa-accent-dim:#E8A96C; --pa-accent-deep:#A8501F;
-  --pa-accent-soft:#F7EADF;
-  --pa-ease:cubic-bezier(.22,.61,.36,1);
-  font-family: var(--font-geist), 'Geist', system-ui, sans-serif;
+  --pa-ink:#17181c; --pa-muted:#56585f; --pa-faint:#86878d;
+  --pa-line:rgba(23,24,28,0.08); --pa-core:#fafafa; --pa-sunk:#e2e2e4;
+  --pa-accent:#ed6f5c; --pa-accent-dim:#e9b94a; --pa-accent-deep:#d63118;
+  --pa-accent-soft:#fbe4de;
+  --pa-ease:cubic-bezier(.22,1,.36,1);
+  font-family: var(--font-inter-tight), 'Inter Tight', system-ui, sans-serif;
 }
-/* Double bezel — outer 32px, 6px pad, inner 26px, concentric. */
+/* Double bezel — outer 24px, 6px pad, inner 18px, concentric. */
 .pa{
   max-width:470px; margin:0 auto; background:#fff;
-  padding:6px; border-radius:32px; transform:rotate(0.4deg);
-  box-shadow: inset 0 0 0 1px var(--pa-line), 0 30px 60px -20px rgba(24,24,27,.13);
+  padding:6px; border-radius:24px; transform:rotate(0.4deg);
+  box-shadow: inset 0 0 0 1px var(--pa-line), 0 30px 60px -30px rgba(23,24,28,.22);
 }
 .pa-core{
-  background:var(--pa-core); border-radius:26px; padding:26px;
+  background:var(--pa-core); border-radius:18px; padding:26px;
   box-shadow: inset 0 0 0 1px var(--pa-line);
 }
 .pa-head{display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
   padding-bottom:18px; border-bottom:1px solid var(--pa-line);}
 .pa-head h3{font-size:19px; font-weight:800; letter-spacing:-0.03em; margin-top:6px; color:var(--pa-ink);}
-.pa-mono{font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+.pa-mono{font-family: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
   font-size:10px; font-weight:500; letter-spacing:.2em; text-transform:uppercase;}
 .pa-dim{color:var(--pa-faint);}
 .pa-badge{
@@ -150,10 +150,11 @@ const CSS = `
   transform-origin:left;
   animation: pa-fill .55s var(--pa-ease) backwards;
 }
-.pa-note{font-size:12px; color:var(--pa-muted); margin-top:8px; line-height:1.5;}
+.pa-note{font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-size:12px; color:var(--pa-muted); margin-top:8px; line-height:1.5;}
 
 .pa-foot{
-  margin-top:18px; padding:16px 20px; background:#fff; border-radius:20px;
+  margin-top:18px; padding:16px 20px; background:#fff; border-radius:14px;
   box-shadow: inset 0 0 0 1px var(--pa-line);
   display:flex; align-items:center; gap:20px;
 }
@@ -161,7 +162,7 @@ const CSS = `
 .pa-stat{font-size:24px; font-weight:800; letter-spacing:-0.035em; margin-top:5px; color:var(--pa-ink); line-height:1;}
 .pa-stat span{font-size:12px; font-weight:500; color:var(--pa-faint); letter-spacing:0; margin-left:3px;}
 
-.pa-disclaimer{margin-top:16px; font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+.pa-disclaimer{margin-top:16px; font-family: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
   font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--pa-faint); text-align:center;}
 
 /* ===================== THE TWO KEYFRAMES =====================

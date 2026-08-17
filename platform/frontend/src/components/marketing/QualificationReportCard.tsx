@@ -147,32 +147,33 @@ export default QualificationReportCard;
 
 /* ------------------------------- THE CSS ---------------------------------
    Fully portable. The two @keyframes at the bottom are the whole trick;
-   everything else is presentation, retuned to Obsidias' palette (warm
-   terracotta accent, Plus Jakarta Sans, hairline rules) instead of the
-   original's forest green. */
+   everything else is presentation, tuned to Atelier Zero: neutral paper and
+   near-white core surfaces, coral bands, Inter Tight / JetBrains Mono, and
+   the mounted plate treatment (white mat, barely-off-white core) that keeps
+   a hint of the double-bezel layering without a cream tint doing the work. */
 const CSS = `
 .qr-wrap{
-  --qr-ink:#18181B; --qr-paper:#fff; --qr-muted:#71717A; --qr-faint:#A1A1AA;
-  --qr-line:rgba(24,24,27,0.06); --qr-chalk:#FAFAF9; --qr-sunk:#F4F4F2;
-  --qr-b1:#D9D9D6; --qr-b2:#E8A96C; --qr-b3:#C1662E; --qr-b4:#A8501F;
-  --qr-ease: cubic-bezier(.22,.61,.36,1);
-  font-family: var(--font-geist), 'Geist', system-ui, sans-serif;
+  --qr-ink:#17181c; --qr-paper:#f5f5f6; --qr-muted:#56585f; --qr-faint:#86878d;
+  --qr-line:rgba(23,24,28,0.08); --qr-chalk:#fafafa; --qr-sunk:#e2e2e4;
+  --qr-b1:#dcdce0; --qr-b2:#e9b94a; --qr-b3:#ed6f5c; --qr-b4:#d63118;
+  --qr-ease: cubic-bezier(.22,1,.36,1);
+  font-family: var(--font-inter-tight), 'Inter Tight', system-ui, sans-serif;
 }
-/* Double bezel: outer shell holds the ring + shadow + 6px of padding, inner
+/* Double bezel: outer mat holds the ring + shadow + 6px of padding, inner
    core drops its radius by exactly that so the corners stay concentric. */
 .qr{
   max-width:470px; margin:0 auto; background:#fff;
-  padding:6px; border-radius:32px; transform:rotate(-0.5deg);
-  box-shadow: inset 0 0 0 1px var(--qr-line), 0 30px 60px -20px rgba(24,24,27,.13);
+  padding:6px; border-radius:24px; transform:rotate(-0.5deg);
+  box-shadow: inset 0 0 0 1px var(--qr-line), 0 30px 60px -30px rgba(23,24,28,.22);
 }
 .qr-core{
-  background:var(--qr-chalk); border-radius:26px; padding:26px;
+  background:var(--qr-chalk); border-radius:18px; padding:26px;
   box-shadow: inset 0 0 0 1px var(--qr-line);
 }
 .qr-head{display:flex; justify-content:space-between; align-items:flex-start;
   padding-bottom:18px; border-bottom:1px solid var(--qr-line); gap:12px;}
 .qr-head h3{font-size:19px; font-weight:800; letter-spacing:-0.03em; margin-top:6px; color:var(--qr-ink);}
-.qr-mono{font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace; font-size:10px;
+.qr-mono{font-family: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace; font-size:10px;
   font-weight:500; letter-spacing:.2em; text-transform:uppercase;}
 .qr-dim{color:var(--qr-faint);}
 .qr-rows{list-style:none; margin:0; padding:0;}
@@ -181,7 +182,8 @@ const CSS = `
 .qr-name{font-size:14px; font-weight:600; letter-spacing:-0.01em; color:var(--qr-ink);}
 .qr-row-right{display:flex; align-items:center; gap:10px;}
 .qr-label{width:118px; text-align:right; color:var(--qr-muted);}
-.qr-finding{font-size:12.5px; color:var(--qr-muted); margin-top:6px; line-height:1.55;}
+.qr-finding{font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-size:12.5px; color:var(--qr-muted); margin-top:6px; line-height:1.55;}
 
 /* --- the scale primitive --- */
 .qr-scale{display:flex; gap:3px;}
@@ -189,14 +191,15 @@ const CSS = `
 .qr-cell-fill{ transform-origin:left; animation: qr-fill .5s var(--qr-ease) backwards; }
 
 /* --- footer --- */
-.qr-foot{margin-top:18px; padding:18px 20px; background:#fff; border-radius:20px;
+.qr-foot{margin-top:18px; padding:18px 20px; background:#fff; border-radius:14px;
   box-shadow: inset 0 0 0 1px var(--qr-line);
   display:flex; justify-content:space-between; align-items:center; gap:12px;}
 .qr-overall{display:flex; align-items:center; gap:10px; margin-top:6px;}
 .qr-overall-band{font-size:20px; font-weight:800; letter-spacing:-0.03em; color:var(--qr-b4);}
-.qr-note{font-size:11.5px; color:var(--qr-muted); text-align:right; max-width:170px; line-height:1.5;}
+.qr-note{font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+  font-size:11.5px; color:var(--qr-muted); text-align:right; max-width:170px; line-height:1.5;}
 
-.qr-disclaimer{margin-top:16px; font-family: var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+.qr-disclaimer{margin-top:16px; font-family: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, monospace;
   font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--qr-faint); text-align:center;}
 
 /* ======================= THE TWO KEYFRAMES ============================

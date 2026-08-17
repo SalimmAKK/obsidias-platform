@@ -172,9 +172,13 @@
 
 /* ── FOCUS ───────────────────────────────────────────────────────────────
    :focus-visible so it doesn't fire on mouse clicks. Offset so it reads as
-   a ring around the element rather than a border on it. */
+   a ring around the element rather than a border on it.
+
+   Ink rather than coral: the ring has to stay visible on top of a coral
+   button, and coral-on-coral is invisible. On the dark slab it flips to
+   paper — see the .slab override in Marketing.css. */
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
   border-radius: var(--r-xs);
 }

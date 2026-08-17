@@ -15,6 +15,7 @@ import { Button } from "@/components/Button";
 import { useToast } from "@/components/ToastProvider";
 import { LeadStatusBadge, BucketBadge, ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 import type { DashboardSummary } from "@/app/api/v1/dashboard/route";
+import { STATUS_COLORS, SERIES_1, SERIES_2, CURSOR_WASH, EXIT } from "@/lib/vizColors";
 
 /* Entrance animation intentionally disabled on dashboard surfaces.
    `initial` values are server-rendered as inline styles, so an
@@ -36,10 +37,6 @@ const STATUS_LABELS: Record<string, string> = {
   nurturing: "Nurturing", booked: "Booked", archived: "Archived", dead: "Dead",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  new: "#8B78FC", needs_review: "#F59E0B", qualified: "#10B981",
-  nurturing: "#0EA5E9", booked: "#059669", archived: "#9CA3AF", dead: "#EF4444",
-};
 
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -64,7 +61,7 @@ interface CardData {
 }
 
 function MetricCard({ title, value, icon: Icon, tone = "default", delay = 0 }: CardData & { delay?: number }) {
-  const toneColor = tone === "warning" ? "text-amber-600" : tone === "success" ? "text-[var(--green)]" : "text-[var(--ink)]";
+  const toneColor = tone === "warning" ? "text-[var(--st-warn)]" : tone === "success" ? "text-[var(--st-good)]" : "text-[var(--ink)]";
   return (
     <motion.div {...fadeUp(delay)} className="saas-card p-6" style={{ height: "100%" }}>
       <div className="flex items-start justify-between mb-3">
@@ -264,10 +261,10 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--ink2)]">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#C1662E" }} />Captured
+                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: SERIES_1 }} />Captured
               </div>
               <div className="flex items-center gap-1.5 text-[12px] font-medium text-[var(--ink2)]">
-                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: "#E8A96C" }} />Qualified
+                <span className="w-2.5 h-2.5 rounded-sm inline-block" style={{ background: SERIES_2 }} />Qualified
               </div>
               <div className="flex items-center bg-[var(--bg)] shadow-[inset_0_0_0_1px_var(--hair)] rounded-lg p-1">
                 {(["daily", "weekly"] as const).map(g => (
@@ -289,9 +286,9 @@ export default function DashboardPage() {
                   tick={{ fill: "var(--ink3)", fontSize: 10, fontWeight: 600 }} dy={8}
                   interval={chartGrouping === "daily" ? 4 : 0} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} allowDecimals={false} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(91,79,245,0.05)" }} />
-                <Bar dataKey="captured" name="Captured" fill="#C1662E" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="qualified" name="Qualified" fill="#E8A96C" radius={[4, 4, 0, 0]} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: CURSOR_WASH }} />
+                <Bar dataKey="captured" name="Captured" fill={SERIES_1} radius={[4, 4, 0, 0]} />
+                <Bar dataKey="qualified" name="Qualified" fill={SERIES_2} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -378,7 +375,7 @@ export default function DashboardPage() {
               <div className="flex rounded-full overflow-hidden h-2.5 mb-5 gap-0.5">
                 {summary?.statusBreakdown.map(s => (
                   <div key={s.status} style={{
-                    background: STATUS_COLORS[s.status] || "#9CA3AF",
+                    background: STATUS_COLORS[s.status] || EXIT,
                     width: `${(s.count / totalStatus) * 100}%`,
                   }} />
                 ))}
@@ -387,7 +384,7 @@ export default function DashboardPage() {
                 {summary?.statusBreakdown.map(s => (
                   <div key={s.status} className="bg-[var(--bg)] rounded-2xl p-4">
                     <div className="flex items-center gap-1.5 mb-2">
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: STATUS_COLORS[s.status] || "#9CA3AF" }} />
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: STATUS_COLORS[s.status] || EXIT }} />
                       <span className="font-sans text-[9px] font-semibold uppercase tracking-wider text-[var(--ink3)] leading-tight">
                         {STATUS_LABELS[s.status] || s.status}
                       </span>

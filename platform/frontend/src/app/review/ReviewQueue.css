@@ -3,16 +3,26 @@
   padding: 2rem 2.5rem;
   max-width: 1100px;
   margin: 0 auto;
-  font-family: var(--font-sans, 'Inter', sans-serif);
+  /* Was var(--font-sans, 'Inter', sans-serif). --font-sans has never been
+     defined in any version of the tokens file, and next/font gives Inter a
+     scoped family name, so the literal 'Inter' never matched either — this
+     whole page was silently rendering in the system UI font while every
+     other page was Inter Tight. */
+  font-family: var(--sans);
 
-  --border-warning: rgba(245, 158, 11, 0.2);
-  --border-success: rgba(16, 185, 129, 0.2);
-  --border-danger: rgba(239, 68, 68, 0.2);
-  --border-strong: var(--ink3);
-  --fill-success: var(--green);
-  --on-success: #ffffff;
-  --fill-danger: var(--red);
-  --on-danger: #ffffff;
+  /* Were raw Tailwind amber/emerald/red rgba, which is how this page ended up
+     off-system in the first place. Now derived from the validated status
+     scale. --border-accent was referenced further down but never defined
+     anywhere, so that rule was a silent no-op. */
+  --border-warning: color-mix(in srgb, var(--st-warn) 24%, transparent);
+  --border-success: color-mix(in srgb, var(--st-good) 24%, transparent);
+  --border-danger:  color-mix(in srgb, var(--st-critical) 24%, transparent);
+  --border-accent:  color-mix(in srgb, var(--st-active) 34%, transparent);
+  --border-strong:  var(--ink3);
+  --fill-success:   var(--st-good);
+  --on-success:     #ffffff;
+  --fill-danger:    var(--st-critical);
+  --on-danger:      #ffffff;
 }
 
 /* ── PAGE HEADER ─────────────────────────────────────────────────────────── */
@@ -431,3 +441,15 @@
     padding: 1.25rem;
   }
 }
+
+/* Icons are lucide SVGs now, not Tabler webfont glyphs — the webfont cost a
+   render-blocking third-party stylesheet on every page in the app for six
+   icons. These sizes match what the glyphs occupied. */
+.rq-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  stroke-width: 2;
+  vertical-align: -2px;
+}
+.review-empty-icon .rq-icon { width: 26px; height: 26px; }

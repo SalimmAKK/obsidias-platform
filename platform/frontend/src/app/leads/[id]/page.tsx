@@ -9,6 +9,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { GlassPanel } from "@/components/GlassPanel";
 import { LeadStatusBadge, BucketBadge, ChannelIcon, CHANNEL_LABELS } from "@/components/LeadBadges";
 import { useToast } from "@/components/ToastProvider";
+import { SERIES_1 } from "@/lib/vizColors";
 
 interface LeadDetail {
   id: string; firstName: string; lastName: string; email: string; phone: string;
@@ -33,7 +34,7 @@ const BANT_LABELS: Record<string, string> = { budget: "Budget", authority: "Auth
 
 function bantTone(value: string): string {
   if (["high", "strong", "immediate", "true"].includes(value)) return "text-[var(--green)] bg-[var(--green-lt)]";
-  if (["medium", "moderate", "3months"].includes(value)) return "text-amber-600 bg-amber-50";
+  if (["medium", "moderate", "3months"].includes(value)) return "text-[var(--st-warn)] bg-[var(--st-warn-bg)]";
   if (["low", "weak"].includes(value)) return "text-[var(--red)] bg-[var(--red-lt)]";
   return "text-[var(--ink3)] bg-[var(--rule)]";
 }
@@ -191,7 +192,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} />
                     <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: "var(--ink3)", fontSize: 10 }} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="score" stroke="#C1662E" strokeWidth={2.5} dot={{ r: 3, fill: "#C1662E" }} />
+                    <Line type="monotone" dataKey="score" stroke={SERIES_1} strokeWidth={2.5} dot={{ r: 3, fill: SERIES_1 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>

@@ -82,7 +82,7 @@ export default function CampaignsPage() {
                       </td>
                       <td className="py-4 px-5 text-right">
                         <span className="inline-flex items-center gap-1 font-sans font-semibold text-[13px] text-[var(--ink)]">
-                          <Flame className="w-3.5 h-3.5 text-[#C77DFF]" />{c.hot}
+                          <Flame className="w-3.5 h-3.5 text-[var(--st-active)]" />{c.hot}
                         </span>
                       </td>
                       <td className="py-4 px-5 text-right font-sans text-[13px] text-[var(--ink2)]">{c.qualified}</td>

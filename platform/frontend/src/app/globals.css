@@ -1,28 +1,48 @@
 @import "tailwindcss";
 @import "../styles/tokens.css";
 @import "../styles/motion.css";
+@import "../styles/paper.css";
 
 /* ============================================================================
-   Dashboard — soft premium
+   Dashboard — Atelier Zero
    ============================================================================
-   The product surface runs the same system as the marketing site: silver
-   canvas, hairline rings instead of solid borders, wide diffuse shadows,
-   squircle radii, Geist. The block below maps the shared tokens onto the
-   additional names dashboard components already reference, so those files
-   didn't all need touching when the palette changed.
+   The product surface runs the same system as the marketing site: neutral
+   canvas under the same (now cooled, quieted) grain overlay, coral as the
+   only accent, hairline alpha rules instead of solid borders, and the Inter
+   Tight / JetBrains Mono pairing.
+
+   Two deliberate departures from the marketing site, both for legibility
+   under dense data:
+     - Cards are pure white rather than --bone (which is itself now a hair
+       off white, not the cream it used to be). --bone reads fine behind six
+       marketing cards; white keeps a 40-row table crisper still.
+     - Radii stay modest. The editorial look here comes from rules, mono
+       labels, and the serif numeral, not from heavy rounding.
+
+   The block below maps the shared tokens onto the additional names dashboard
+   components already reference, so those files didn't all need touching when
+   the palette changed.
    ========================================================================= */
 :root {
   --surface:    var(--shell);
   --bg:         var(--canvas);
   --card:       var(--shell);
-  --card2:      var(--core);
+  --card2:      var(--bone);
   --rule:       var(--hair);
-  --yellow:     #B4700F;
+  --yellow:     #8a6d1f;
   --sidebar-w:  248px;
 
   /* The dashboard predates the accent rename; these keep older component
-     files working without a sweep through every one of them. */
-  --purple:     var(--accent);
+     files working without a sweep through every one of them.
+
+     --purple maps to the DEEP coral, not the fill coral, because the
+     dashboard uses it overwhelmingly as a text colour (spinners, links, tab
+     labels, badge text). Plain --coral (#ed6f5c) on white is ~2.6:1 and
+     fails AA outright; --coral-text is the 4.5:1 variant the design system
+     ships for exactly this. The handful of fill usages
+     (bg-[var(--purple)] on a dot or a chat bubble) read fine in the deeper
+     shade, so one mapping covers both rather than splitting the token. */
+  --purple:     var(--accent-deep);
   --purple-lt:  var(--accent-soft);
   --purple-dim: var(--accent-dim);
 
@@ -36,7 +56,8 @@
   --surface-2:      var(--canvas);
   --border:         var(--hair);
   --fill-accent:    var(--accent);
-  --on-accent:      #FFFFFF;
+  /* Ink, not white: white text on coral fails contrast badly. */
+  --on-accent:      var(--ink);
   --bg-accent:      var(--accent-soft);
   --text-accent:    var(--accent-deep);
   --text-primary:   var(--ink);
@@ -44,10 +65,15 @@
   --text-muted:     var(--ink3);
   --bg-pro:         var(--accent-soft);
   --text-pro:       var(--accent-deep);
-  --bg-warning:     var(--amber-lt);
-  --text-warning:   var(--amber);
-  --bg-success:     var(--green-lt);
-  --text-success:   var(--green);
+  --bg-warning:     var(--st-warn-bg);
+  --text-warning:   var(--st-warn);
+  --bg-success:     var(--st-good-bg);
+  --text-success:   var(--st-good);
+  /* The danger pair was referenced six times in ReviewQueue.css (the "low"
+     BANT chip, the disqualify button) but defined nowhere, so those elements
+     rendered with no background and inherited text colour. */
+  --bg-danger:      var(--st-critical-bg);
+  --text-danger:    var(--st-critical);
   --radius:         var(--r-md);
 }
 
@@ -62,24 +88,48 @@ html {
   color-scheme: light;
 }
 
+/* The single place body-level styling is declared, for the marketing site and
+   the dashboard alike. Marketing.css deliberately has no `*`/`html`/`body`
+   rules — an unlayered global reset in a route-scoped stylesheet outranks
+   Tailwind's layered utilities and breaks every page it leaks onto after a
+   client-side navigation. See the header comment in Marketing.css. */
 body {
   height: 100%;
   margin: 0;
   background-color: var(--canvas);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  font-family: var(--font);
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--sans);
+  line-height: 1.55;
+  /* Marquee tracks and the rotated side rails both overhang; without this the
+     marketing pages get a horizontal scrollbar. */
+  overflow-x: hidden;
+  position: relative;
 }
 
+/* App chrome sits above the fixed paper grain (z-index 1 in paper.css). */
+body > * { position: relative; z-index: 2; }
+
 /* ── Typography helpers ──────────────────────────────────────────────────── */
-.font-sans    { font-family: var(--font); }
-.font-heading { font-family: var(--font); letter-spacing: -0.03em; font-weight: 700; }
-.font-mono    { font-family: var(--font-mono); }
+.font-sans    { font-family: var(--sans); }
+.font-body    { font-family: var(--body); }
+.font-heading { font-family: var(--sans); letter-spacing: -0.03em; font-weight: 700; }
+.font-mono    { font-family: var(--mono); }
+
+/* Editorial serif numeral, the dashboard's echo of the marketing method
+   section. For section counts and large single figures only. */
+.serif-num {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--coral-text);
+  letter-spacing: -0.02em;
+}
 
 /* ── Card ────────────────────────────────────────────────────────────────
-   The dashboard's workhorse surface. Same double-bezel language as the
-   marketing site, expressed as a single element: hairline ring inset, wide
-   diffuse shadow, generous radius. */
+   The dashboard's workhorse surface: hairline ring inset, the system's wide
+   diffuse shadow, modest radius. */
 .saas-card {
   background: var(--shell);
   border-radius: var(--r-md);
@@ -97,6 +147,10 @@ body {
 /* Opt-out for cards that shouldn't lift (tables, static panels). */
 .saas-card.is-static:hover { transform: none; box-shadow: inset 0 0 0 1px var(--hair), var(--lift-1); }
 
+/* Bone variant, for the one or two feature surfaces per screen worth
+   pulling forward. */
+.saas-card.accent { background: var(--bone); }
+
 /* True double-bezel, for the few places worth the extra nesting. */
 .bezel {
   background: var(--shell);
@@ -105,26 +159,27 @@ body {
   box-shadow: inset 0 0 0 1px var(--hair), var(--lift-1);
 }
 .bezel-core {
-  background: var(--core);
+  background: var(--bone);
   border-radius: calc(var(--r-lg) - var(--bezel));
   box-shadow: inset 0 0 0 1px var(--hair);
   height: 100%;
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────
-   Pills, matching the marketing site. The primary carries an optional
-   trailing icon in its own circular wrapper (.btn-icon). */
+   Pills, matching the marketing site. The primary is coral with ink text —
+   the system's one accent fill — and carries an optional trailing icon in
+   its own circular wrapper (.btn-icon). */
 .premium-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
   padding: 11px 22px;
-  background: var(--ink);
-  color: #fff;
+  background: var(--coral);
+  color: var(--ink);
   border: none;
   border-radius: var(--r-pill);
-  font-family: var(--font);
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -132,12 +187,13 @@ body {
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
+  box-shadow: 0 14px 26px -18px rgba(237, 111, 92, 1);
   transition:
     background-color 200ms,
     transform 200ms var(--ease),
     box-shadow 200ms var(--ease);
 }
-.premium-button:hover { background: #000; transform: translateY(-1px); box-shadow: var(--lift-2); }
+.premium-button:hover { background: #e25e4a; transform: translateY(-1px); box-shadow: var(--lift-2); }
 .premium-button:active { transform: scale(0.98); }
 .premium-button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -148,11 +204,17 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(23, 24, 28, 0.14);
   flex-shrink: 0;
   transition: transform 200ms var(--ease);
 }
 .premium-button:hover .btn-icon { transform: translate(1px, -1px) scale(1.05); }
+
+/* Ink variant, for destructive confirms and anywhere coral would read as
+   celebratory rather than serious. */
+.premium-button.ink { background: var(--ink); color: var(--paper); box-shadow: none; }
+.premium-button.ink:hover { background: #000; }
+.premium-button.ink .btn-icon { background: rgba(247, 246, 242, 0.16); }
 
 .ghost-button {
   display: inline-flex;
@@ -160,21 +222,21 @@ body {
   justify-content: center;
   gap: 9px;
   padding: 11px 20px;
-  background: var(--shell);
+  background: transparent;
   color: var(--ink);
   border: none;
   box-shadow: inset 0 0 0 1px var(--hair-strong);
   border-radius: var(--r-pill);
-  font-family: var(--font);
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1;
   cursor: pointer;
   white-space: nowrap;
-  transition: box-shadow 200ms var(--ease), transform 200ms var(--ease);
+  transition: box-shadow 200ms var(--ease), background-color 200ms, transform 200ms var(--ease);
 }
-.ghost-button:hover { box-shadow: inset 0 0 0 1px var(--ink4), var(--lift-1); transform: translateY(-1px); }
+.ghost-button:hover { background: rgba(23, 24, 28, 0.04); transform: translateY(-1px); }
 .ghost-button:active { transform: scale(0.98); }
 
 /* ── Input ───────────────────────────────────────────────────────────────── */
@@ -188,13 +250,13 @@ body {
   box-shadow: inset 0 0 0 1px var(--hair-strong);
   border-radius: var(--r-sm);
   color: var(--ink);
-  font-family: var(--font);
+  font-family: var(--sans);
   font-size: 14px;
   transition: box-shadow 200ms var(--ease);
 }
 .input-field:focus {
   outline: none;
-  box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--coral), 0 0 0 4px var(--accent-soft);
 }
 .input-field::placeholder { color: var(--ink4); }
 
@@ -205,7 +267,7 @@ textarea.input-field { height: auto; padding: 12px 15px; line-height: 1.6; resiz
    The dashboard equivalent of the marketing site's .o-mono — used for
    column heads, stat captions, and timestamps. */
 .meta-label {
-  font-family: var(--font-mono);
+  font-family: var(--mono);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -213,12 +275,26 @@ textarea.input-field { height: auto; padding: 12px 15px; line-height: 1.6; resiz
   color: var(--ink4);
 }
 
+/* Editorial section rule, the dashboard's echo of the marketing .o-rule. */
+.dash-rule {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
 /* ── Focus ───────────────────────────────────────────────────────────────
-   :focus-visible only, so it never fires on a mouse click. The shared rule
-   in motion.css covers most elements; this raises specificity for anything
-   Tailwind's preflight would otherwise win over. */
+   :focus-visible only, so it never fires on a mouse click. Ink rather than
+   coral so the ring stays visible on top of a coral button. */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
   border-radius: var(--r-xs);
 }

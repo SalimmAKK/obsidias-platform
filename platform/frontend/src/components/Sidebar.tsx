@@ -6,19 +6,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Users, Settings, LogOut,
-  Search, Zap, Hexagon, ChevronRight, MessageSquare,
+  Search, Zap, ChevronRight, MessageSquare, SquareCheck,
   CalendarClock, Megaphone, BarChart3
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 
+/* Was a Tabler webfont glyph, which cost a render-blocking stylesheet from a
+   CDN for this one icon. Lucide is already bundled. */
 function CheckboxIcon({ className }: { className?: string }) {
-  return (
-    <i 
-      className={cn("ti ti-checkbox", className)} 
-      style={{ fontSize: "16px", display: "inline-flex", alignItems: "center", justifyContent: "center" }} 
-    />
-  );
+  return <SquareCheck className={cn("w-4 h-4", className)} />;
 }
 
 const SETTINGS_NAV = [
@@ -41,7 +38,7 @@ function NavItem({ href, icon: Icon, label, badge, isWarningBadge }: {
             : "text-[var(--ink2)] hover:bg-[var(--core)] hover:text-[var(--ink)]"
         )}
       >
-        <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-[var(--accent)]" : "text-[var(--ink4)]")} />
+        <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-[var(--accent-deep)]" : "text-[var(--ink4)]")} />
         <span className="flex-1 leading-none">{label}</span>
         {badge ? (
           <span className={cn(
@@ -49,13 +46,13 @@ function NavItem({ href, icon: Icon, label, badge, isWarningBadge }: {
             isWarningBadge
               ? "bg-[var(--bg-warning)] text-[var(--text-warning)]"
               : isActive
-                ? "bg-[var(--purple)] text-white"
+                ? "bg-[var(--coral)] text-[var(--ink)]"
                 : "bg-[var(--sunk)] text-[var(--ink2)]"
           )}>
             {badge}
           </span>
         ) : isActive ? (
-          <ChevronRight className="w-3 h-3 text-[var(--accent)] opacity-60" />
+          <ChevronRight className="w-3 h-3 text-[var(--accent-deep)] opacity-60" />
         ) : null}
       </motion.div>
     </Link>
@@ -131,11 +128,16 @@ export function Sidebar() {
 
   return (
     <aside className="w-[248px] shrink-0 sticky top-0 h-screen flex flex-col bg-[var(--shell)] shadow-[inset_-1px_0_0_var(--hair)]">
-      {/* Logo */}
+      {/* Logo — the same serif-in-a-circle mark the marketing nav uses, so
+          signing in doesn't feel like arriving at a different product. */}
       <div className="flex items-center gap-2.5 px-5 h-[68px] shrink-0">
-        <div className="w-8 h-8 rounded-[10px] bg-[var(--accent)] flex items-center justify-center shrink-0">
-          <Hexagon className="w-4 h-4 text-white" />
-        </div>
+        <span
+          className="w-8 h-8 rounded-full border-[1.5px] border-[var(--ink)] flex items-center justify-center shrink-0 italic text-[15px] text-[var(--ink)]"
+          style={{ fontFamily: "var(--serif)" }}
+          aria-hidden="true"
+        >
+          O
+        </span>
         <span className="font-sans font-bold text-[16px] text-[var(--ink)] tracking-[-0.02em]">Obsidias</span>
       </div>
 
@@ -168,20 +170,22 @@ export function Sidebar() {
 
       {/* Bottom promo */}
       <div className="p-3 shrink-0">
+        {/* Coral into mustard, with ink text — white on coral fails contrast,
+            and ink is what the system uses on every accent fill. */}
         <div
-          className="rounded-[20px] p-4 text-white relative overflow-hidden"
-          style={{ background: "linear-gradient(135deg, #C1662E 0%, #E8A96C 100%)" }}
+          className="rounded-[18px] p-4 text-[var(--ink)] relative overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #ed6f5c 0%, #e9b94a 100%)" }}
         >
-          <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white/10" />
-          <div className="absolute -bottom-3 -left-3 w-16 h-16 rounded-full bg-white/10" />
-          <div className="w-8 h-8 rounded-[10px] bg-white/20 flex items-center justify-center mb-3 relative">
-            <Zap className="w-4 h-4 text-white" />
+          <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-[rgba(23,24,28,0.06)]" />
+          <div className="absolute -bottom-3 -left-3 w-16 h-16 rounded-full bg-[rgba(23,24,28,0.06)]" />
+          <div className="w-8 h-8 rounded-[10px] bg-[rgba(23,24,28,0.12)] flex items-center justify-center mb-3 relative">
+            <Zap className="w-4 h-4 text-[var(--ink)]" />
           </div>
           <p className="font-sans font-semibold text-[13px] mb-1 relative">Stay on top of review</p>
-          <p className="font-sans text-[11px] text-white/70 mb-3 leading-relaxed relative">
+          <p className="font-sans text-[11px] text-[rgba(23,24,28,0.7)] mb-3 leading-relaxed relative">
             Leads below the AI confidence threshold are waiting on you
           </p>
-          <Link href="/review" className="w-full block text-center bg-white text-[var(--accent-deep)] rounded-full py-2 text-[12px] font-semibold hover:bg-white/90 transition-colors relative">
+          <Link href="/review" className="w-full block text-center bg-[var(--paper)] text-[var(--ink)] rounded-full py-2 text-[12px] font-semibold hover:bg-white transition-colors relative">
             Go to Review Queue
           </Link>
         </div>

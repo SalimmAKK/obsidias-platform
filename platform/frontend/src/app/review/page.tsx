@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { AppLayout } from '@/components/AppLayout';
+import { Clock, Check, X, Send } from 'lucide-react';
 import './ReviewQueue.css';
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
@@ -56,11 +57,15 @@ const DISQUALIFY_REASONS = [
   'Out of timeline',
 ];
 
+/* Avatar tints. Were four near-black plates with neon text — dark-theme
+   chips stranded in a light app. Now the four light tints already validated
+   for the status scale, cycled by name hash purely for variety; they carry
+   no meaning, so any of them is safe on any lead. */
 const AVATAR_COLORS: [string, string][] = [
-  ['#2A1030', '#C77DFF'],
-  ['#0A1F18', '#00B894'],
-  ['#10102A', '#7B8BFF'],
-  ['#1A0830', '#A78BFA'],
+  ['var(--st-active-bg)', 'var(--st-active)'],
+  ['var(--st-good-bg)', 'var(--st-good)'],
+  ['var(--st-warn-bg)', 'var(--st-warn)'],
+  ['var(--st-neutral-bg)', 'var(--st-neutral)'],
 ];
 
 function bantClass(value: BantSignal): string {
@@ -186,7 +191,7 @@ function LeadCard({ lead, index, onQualify, onDisqualify, onMoreInfo }: CardProp
           <span className="source-badge">{lead.source}</span>
         </div>
         <div className="card-time">
-          <i className="ti ti-clock" aria-hidden="true" />
+          <Clock className="rq-icon" aria-hidden="true" />
           {lead.capturedAt}
         </div>
         <div className="card-channel">
@@ -245,7 +250,7 @@ function LeadCard({ lead, index, onQualify, onDisqualify, onMoreInfo }: CardProp
             onClick={() => handleDismiss(() => onQualify(lead.id))}
             disabled={loading}
           >
-            <i className="ti ti-check" aria-hidden="true" />
+            <Check className="rq-icon" aria-hidden="true" />
             Qualify
           </button>
 
@@ -254,7 +259,7 @@ function LeadCard({ lead, index, onQualify, onDisqualify, onMoreInfo }: CardProp
             onClick={handleDisqualifyClick}
             disabled={loading}
           >
-            <i className="ti ti-x" aria-hidden="true" />
+            <X className="rq-icon" aria-hidden="true" />
             Disqualify
           </button>
 
@@ -274,7 +279,7 @@ function LeadCard({ lead, index, onQualify, onDisqualify, onMoreInfo }: CardProp
             onClick={() => handleDismiss(() => onMoreInfo(lead.id))}
             disabled={loading}
           >
-            <i className="ti ti-send" aria-hidden="true" />
+            <Send className="rq-icon" aria-hidden="true" />
             Request more info
           </button>
         </div>
@@ -399,7 +404,7 @@ export default function ReviewQueue() {
         {/* EMPTY STATE */}
         <div className={`review-empty${isEmpty ? ' visible' : ''}`}>
           <div className="review-empty-icon">
-            <i className="ti ti-check" aria-hidden="true" />
+            <Check className="rq-icon" aria-hidden="true" />
           </div>
           <h3>No leads pending review</h3>
           <p>The AI is handling qualification. Leads that need your attention will appear here.</p>
